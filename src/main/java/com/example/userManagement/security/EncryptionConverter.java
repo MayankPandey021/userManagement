@@ -42,7 +42,6 @@ public class EncryptionConverter implements AttributeConverter<String, String> {
     }
 }
 
-//
 //package com.example.userManagement.security;
 //
 //import jakarta.persistence.AttributeConverter;

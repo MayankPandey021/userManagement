@@ -3,7 +3,9 @@ package com.example.userManagement.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
@@ -18,7 +20,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import static org.springframework.security.config.Customizer.withDefaults;
-
+import com.example.userManagement.security.CustomUserDetailsService;
+//import org.springframework.security.authentication.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AuthenticationManager;
 
 @Configuration
 @EnableWebSecurity
@@ -64,6 +68,14 @@ public class SecurityConfig {
 //        return http.build();
 //    }
 
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return customUserDetailsService;
+    }
+
     @Bean
     @Order(2)
     public SecurityFilterChain resourceServerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -87,6 +99,20 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .formLogin(withDefaults());
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(customUserDetailsService)
+                .passwordEncoder(passwordEncoder())
+                .and()
+                .build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 
