@@ -1,4 +1,4 @@
-package com.example.userManagement.security;
+package com.example.userManagement.security.auth;
 
 import com.example.userManagement.entity.User;
 import com.example.userManagement.repository.UserRepository;

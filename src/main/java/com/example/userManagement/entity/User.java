@@ -1,6 +1,6 @@
 package com.example.userManagement.entity;
 
-import com.example.userManagement.security.EncryptionConverter;
+import com.example.userManagement.security.crypto.EncryptionConverter;
 import jakarta.persistence.*;
 
 @Entity

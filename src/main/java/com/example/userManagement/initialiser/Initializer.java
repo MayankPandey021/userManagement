@@ -1,6 +1,6 @@
 package com.example.userManagement.initialiser;
 
-import com.example.userManagement.security.JpaRegisteredClientRepository;
+import com.example.userManagement.repository.JpaRegisteredClientRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.boot.CommandLineRunner;

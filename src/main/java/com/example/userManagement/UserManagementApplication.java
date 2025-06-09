@@ -1,6 +1,6 @@
 package com.example.userManagement;
 
-import com.example.userManagement.security.JpaRegisteredClientRepository;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,6 +17,8 @@ public class UserManagementApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(UserManagementApplication.class, args);
 	}
+
+	//Aes 256
 	// Make the repo readable.
 	// Initialisation for each - (Initializer.java)
 	// Understand the flow of the code

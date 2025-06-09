@@ -1,6 +1,6 @@
 
-package com.example.userManagement.Authorization;
-import com.example.userManagement.security.JpaRegisteredClientRepository;
+package com.example.userManagement.security.config;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,17 +8,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+
 import static org.springframework.security.config.Customizer.withDefaults;
-import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 
 
 @Configuration
@@ -29,8 +24,8 @@ public class AuthorizationServerConfig {
 
     @Autowired
     public AuthorizationServerConfig(
-            @Qualifier("userUsername") String userUsername,
-            @Qualifier("userPassword") String userPassword
+            @Value("${USER_USERNAME}") String userUsername,
+            @Value("${USER_PASSWORD}") String userPassword
     ) {
         this.userUsername = userUsername;
         this.userPassword = userPassword;
@@ -50,7 +45,6 @@ public class AuthorizationServerConfig {
             HttpSecurity http,
             @Qualifier("jpaRegisteredClientRepository") RegisteredClientRepository registeredClientRepository
     ) throws Exception {
-        System.out.println(">> Auth Server Security Filter Chain is active");
 
         var authorizationServerConfigurer = new org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer();
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
@@ -66,6 +60,7 @@ public class AuthorizationServerConfig {
         return http.build();
     }
 
+    // Uncomment if you want to use in-memory user details and do the changes accordingly
 //    @Bean
 //    public UserDetailsService users(PasswordEncoder passwordEncoder) {
 //        UserDetails user = User.withUsername(userUsername)

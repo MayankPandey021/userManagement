@@ -1,5 +1,4 @@
-package com.example.userManagement.security;
-
+package com.example.userManagement.repository;
 import com.example.userManagement.entity.ClientScope;
 import com.example.userManagement.entity.OAuthClient;
 import com.example.userManagement.entity.RedirectUri;

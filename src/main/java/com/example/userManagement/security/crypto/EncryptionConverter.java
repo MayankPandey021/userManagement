@@ -1,4 +1,4 @@
-package com.example.userManagement.security;
+package com.example.userManagement.security.crypto;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
