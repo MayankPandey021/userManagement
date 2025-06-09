@@ -1,10 +1,9 @@
 package com.example.userManagement.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -19,8 +18,7 @@ public class OAuthClient {
     @Column(nullable = false)
     private String clientSecret;
 
-    @Column(nullable = false)
-    private String redirectUri;
+
 
     @Column
     private String createdBy;
@@ -41,8 +39,35 @@ public class OAuthClient {
     private LocalDate updatedAt;
 
 
+
     @Column(nullable = false)
     private String authorizationGrantTypes = "authorization_code,refresh_token";
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<RedirectUri> redirectUris;
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<ClientScope> scopes;
+
+    public void setRedirectUris(Set<RedirectUri> redirectUris) {
+        this.redirectUris = redirectUris;
+    }
+
+    // Getter
+    public Set<RedirectUri> getRedirectUris() {
+        return redirectUris;
+    }
+    public void setScopes(Set<ClientScope> scopes) {
+        this.scopes = scopes;
+    }
+
+    // Getter
+    public Set<ClientScope> getScopes() {
+        return scopes;
+    }
+    public OAuthClient() {
+        this.id = UUID.randomUUID().toString();
+    }
 
     public String getAuthorizationGrantTypes() {
         return authorizationGrantTypes;
@@ -52,9 +77,6 @@ public class OAuthClient {
         this.authorizationGrantTypes = authorizationGrantTypes;
     }
 
-    public OAuthClient() {
-        this.id = UUID.randomUUID().toString();
-    }
 
     public String getId() {
         return id;
@@ -80,13 +102,7 @@ public class OAuthClient {
         this.clientSecret = clientSecret;
     }
 
-    public String getRedirectUri() {
-        return redirectUri;
-    }
 
-    public void setRedirectUri(String redirectUri) {
-        this.redirectUri = redirectUri;
-    }
 
     public String getCreatedBy() {
         return createdBy;

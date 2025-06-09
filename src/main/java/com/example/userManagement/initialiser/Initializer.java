@@ -18,13 +18,13 @@ public class Initializer {
     @Bean
     public CommandLineRunner addAnotherClient(JpaRegisteredClientRepository repo, PasswordEncoder encoder) {
         return args -> {
-            if (repo.findByClientId("huge") == null) {
+            if (repo.findByClientId("raj") == null) {
                 RegisteredClient client = RegisteredClient.withId(UUID.randomUUID().toString())
-                        .clientId("huge")
-                        .clientSecret(encoder.encode("huge"))
+                        .clientId("raj")
+                        .clientSecret(encoder.encode("raj"))
                         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                         .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                        .redirectUri("http://localhost:8080/login/oauth2/code/huge")
+                        .redirectUri("http://localhost:8080/login/oauth2/code/raj")
                         .scope("read")
                         .scope("write")
                         .build();
@@ -61,4 +61,22 @@ public class Initializer {
             }
         };
     }
+
+//    @Bean
+//    public CommandLineRunner addDefaultClient(JpaRegisteredClientRepository repo, PasswordEncoder encoder) {
+//        return args -> {
+//            if (repo.findByClientId("my-client") == null) {
+//                RegisteredClient client = RegisteredClient.withId(UUID.randomUUID().toString())
+//                        .clientId("my-client")
+//                        .clientSecret(encoder.encode("my-secret"))
+//                        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+//                        .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+//                        .redirectUri("http://localhost:8080/login/oauth2/code/my-client") // <-- required
+//                        .scope("read")
+//                        .scope("write")
+//                        .build();
+//                repo.save(client);
+//            }
+//        };
+//    }
 }
