@@ -1,6 +1,9 @@
 package com.example.userManagement.initialiser;
 
 import com.example.userManagement.repository.JpaRegisteredClientRepository;
+import com.example.userManagement.repository.OAuthClientRepository;
+import com.example.userManagement.repository.RedirectUriRepository;
+import com.example.userManagement.repository.ClientScopeRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.boot.CommandLineRunner;
@@ -9,55 +12,56 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import com.example.userManagement.repository.UserRepository;
 import com.example.userManagement.entity.User;
+import com.example.userManagement.entity.OAuthClient;
+import com.example.userManagement.entity.RedirectUri;
+import com.example.userManagement.entity.ClientScope;
 
 import java.util.UUID;
+import java.time.LocalDate;
 
 @Configuration
 public class Initializer {
-// http://localhost:8080/oauth2/authorize?response_type=code&client_id=huge&redirect_uri=http://localhost:8080/login/oauth2/code/huge&scope=read%20write
+// http://localhost:8080/oauth2/authorize?response_type=code&client_id=raj&redirect_uri=http://localhost:8080/login/oauth2/code/raj&scope=read%20write
     @Bean
     public CommandLineRunner addAnotherClient(JpaRegisteredClientRepository repo, PasswordEncoder encoder) {
         return args -> {
-            if (repo.findByClientId("raj") == null) {
+            if (repo.findByClientId("poetry") == null) {
                 RegisteredClient client = RegisteredClient.withId(UUID.randomUUID().toString())
-                        .clientId("raj")
-                        .clientSecret(encoder.encode("raj"))
+                        .clientId("poetry")
+                        .clientSecret(encoder.encode("poetry"))
                         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                         .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                        .redirectUri("http://localhost:8080/login/oauth2/code/raj")
+                        .redirectUri("http://localhost:8080/logins/oauth2/code/poetry")
                         .scope("read")
                         .scope("write")
+
                         .build();
                 repo.save(client);
             }
         };
     }
 
+
+
+
     @Bean
     public CommandLineRunner addDefaultUser(UserRepository userRepository, PasswordEncoder encoder) {
         return args -> {
-            if (userRepository.findByUsername("ravi").isEmpty()) {
+            if (userRepository.findByUsername("mayank").isEmpty()) {
                 User user = new User();
-                user.setFirstName("ravi");
+                user.setFirstName("mayank");
                 user.setMiddleName("A");
-                user.setLastName("ravi");
+                user.setLastName("pandey");
                 user.setEmail("ravi@example.com");
                 user.setMobile("1234567890");
-                user.setUsername("ravi");
-                user.setPassword(encoder.encode("ravi"));
-                user.setInactive(false);
+                user.setUsername("mayank");
+                user.setPassword(encoder.encode("mayank"));
+                user.setIsActive(true);
                 user.setIsDeleted(false);
                 user.setCreatedBy("system");
                 user.setUpdatedBy("system");
                 userRepository.save(user);
-                System.out.println("Checking for admin user...");
-//                if (userRepository.findByUsername("admin") == null) {
-//                    System.out.println("Admin user not found, creating...");
-//                    // ... create and save user ...
-//                    System.out.println("Admin user created.");
-//                } else {
-//                    System.out.println("Admin user already exists.");
-//                }
+
             }
         };
     }

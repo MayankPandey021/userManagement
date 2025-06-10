@@ -27,7 +27,10 @@ public class User {
     private String username;
 
     private String password;
-    private boolean inactive;
+
+    @Column(name = "is_active")
+    private boolean isActive;
+
     private boolean isDeleted;
     private String createdBy;
     private String updatedBy;
@@ -96,12 +99,12 @@ public class User {
         this.password = password;
     }
 
-    public boolean isInactive() {
-        return inactive;
+    public boolean isActive() {
+        return isActive;
     }
 
-    public void setInactive(boolean inactive) {
-        this.inactive = inactive;
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
     }
 
     public boolean isDeleted() {

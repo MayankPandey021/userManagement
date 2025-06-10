@@ -22,4 +22,6 @@ public class UserManagementApplication {
 	// Make the repo readable.
 	// Initialisation for each - (Initializer.java)
 	// Understand the flow of the code
+
+	// inActive = false , isDeleted = false
 }

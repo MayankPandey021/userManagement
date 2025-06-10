@@ -25,7 +25,7 @@ public class UserService {
         u.setMobile(r.mobile);
         u.setUsername(r.username);
         u.setPassword(encoder.encode(r.password));
-        u.setInactive(false);
+        u.setIsActive(false);
         u.setIsDeleted(false);
         u.setCreatedBy("admin");
         return repo.save(u);

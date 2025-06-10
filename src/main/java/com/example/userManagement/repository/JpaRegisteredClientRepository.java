@@ -35,6 +35,9 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
         entity.setCreatedBy("system"); // Replace with actual user if available
         entity.setActive(true);
         entity.setDeleted(false);
+        entity.setUpdatedAt(LocalDate.now());
+        entity.setUpdatedBy("system");
+
 
         // Handle redirect URIs
         Set<RedirectUri> redirectUris = registeredClient.getRedirectUris().stream()
@@ -42,6 +45,12 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
                     RedirectUri redirectUri = new RedirectUri();
                     redirectUri.setUri(uri);
                     redirectUri.setClient(entity);
+                    redirectUri.setCreatedAt(entity.getCreatedAt());
+                    redirectUri.setCreatedBy(entity.getCreatedBy());
+                    redirectUri.setActive(entity.getActive());
+                    redirectUri.setDeleted(entity.getDeleted());
+                    redirectUri.setUpdatedAt(entity.getUpdatedAt());
+                    redirectUri.setUpdatedBy(entity.getUpdatedBy());
                     return redirectUri;
                 })
                 .collect(Collectors.toSet());
@@ -53,6 +62,12 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
                     ClientScope clientScope = new ClientScope();
                     clientScope.setScope(scope);
                     clientScope.setClient(entity);
+                    clientScope.setCreatedAt(entity.getCreatedAt());
+                    clientScope.setCreatedBy(entity.getCreatedBy());
+                    clientScope.setActive(entity.getActive());
+                    clientScope.setDeleted(entity.getDeleted());
+                    clientScope.setUpdatedAt(entity.getUpdatedAt());
+                    clientScope.setUpdatedBy(entity.getUpdatedBy());
                     return clientScope;
                 })
                 .collect(Collectors.toSet());

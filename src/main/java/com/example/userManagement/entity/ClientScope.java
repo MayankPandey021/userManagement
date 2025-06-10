@@ -18,22 +18,22 @@ public class ClientScope {
     @Column(nullable = false, length = 255)
     private String scope;
 
-    @Column
+    @Column(name = "created_by")
     private String createdBy;
 
     @Column
     private String updatedBy;
 
-    @Column
+    @Column(name = "is_deleted")
     private Boolean isDeleted;
 
-    @Column
+    @Column(name = "is_active")
     private Boolean isActive;
 
-    @Column
+    @Column(name= "created_at")
     private LocalDate createdAt;
 
-    @Column
+    @Column(name="updated_at")
     private LocalDate updatedAt;
 
     public ClientScope() {}
