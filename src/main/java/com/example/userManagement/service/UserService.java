@@ -1,6 +1,6 @@
 package com.example.userManagement.service;
 
-import com.example.userManagement.dto.UserCreateRequest;
+import com.example.userManagement.dto.user.UserCreateRequest;
 import com.example.userManagement.entity.User;
 import com.example.userManagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

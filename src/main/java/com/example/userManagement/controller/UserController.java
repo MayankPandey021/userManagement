@@ -1,8 +1,8 @@
 package com.example.userManagement.controller;
 
-import com.example.userManagement.dto.LoginRequest;
-import com.example.userManagement.dto.ResetPasswordRequest;
-import com.example.userManagement.dto.UserCreateRequest;
+import com.example.userManagement.dto.user.LoginRequest;
+import com.example.userManagement.dto.user.ResetPasswordRequest;
+import com.example.userManagement.dto.user.UserCreateRequest;
 import com.example.userManagement.entity.User;
 import com.example.userManagement.service.UserService;
 import jakarta.validation.Valid;

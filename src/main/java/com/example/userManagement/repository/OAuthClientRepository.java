@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface OAuthClientRepository extends JpaRepository<OAuthClient, String> {
@@ -13,4 +14,12 @@ public interface OAuthClientRepository extends JpaRepository<OAuthClient, String
 
     @Query("SELECT c FROM OAuthClient c LEFT JOIN FETCH c.redirectUris LEFT JOIN FETCH c.scopes WHERE c.clientId = :clientId")
     Optional<OAuthClient> findByClientIdWithDetails(@Param("clientId") String clientId);
+
+
+    boolean existsByClientId(String clientId);
+
+    List<OAuthClient> findAllByIsDeletedFalseAndIsActiveTrue();
+
+    Optional<OAuthClient> findByClientIdAndIsDeletedFalse(String clientId);
+
 }

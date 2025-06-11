@@ -19,7 +19,7 @@ import com.example.userManagement.security.auth.CustomUserDetailsService;
 //import org.springframework.security.authentication.AuthenticationManagerBuilder;
 import org.springframework.security.authentication.AuthenticationManager;
 
-@EnableMethodSecurity(prePostEnabled = true)
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {

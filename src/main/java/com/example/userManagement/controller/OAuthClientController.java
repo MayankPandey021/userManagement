@@ -1,20 +1,18 @@
 // src/main/java/com/example/userManagement/controller/OAuthClientController.java
 package com.example.userManagement.controller;
 
-import com.example.userManagement.dto.OAuthClientCreateRequest;
-import com.example.userManagement.dto.OAuthClientDto;
-import com.example.userManagement.dto.OAuthClientLoginRequest;
+import com.example.userManagement.entity.OAuthClient;
 import com.example.userManagement.service.OAuthClientService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/clients")
+@RequestMapping("/api/oauth-clients")
 public class OAuthClientController {
 
     @Autowired
@@ -22,40 +20,50 @@ public class OAuthClientController {
 
     @PreAuthorize("hasAuthority('SCOPE_write')")
     @PostMapping("/create")
-    public ResponseEntity<?> create(@Valid @RequestBody OAuthClientCreateRequest r) {
-        return ResponseEntity.ok(service.createClient(r));
+    public ResponseEntity<?> create(@RequestBody OAuthClient client, Principal principal) {
+        OAuthClient created = service.createClient(client, principal.getName());
+        return ResponseEntity.ok(created);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody OAuthClientLoginRequest r) {
-        return service.login(r.getClientId(), r.getClientSecret())
-                .map(c -> ResponseEntity.ok("Login successful"))
-                .orElse(ResponseEntity.status(401).body("Invalid credentials"));
+    @PreAuthorize("hasAuthority('SCOPE_write')")
+    @PutMapping("/{clientId}")
+    public ResponseEntity<?> update(@PathVariable String clientId, @RequestBody OAuthClient client, Principal principal) {
+        OAuthClient updated = service.updateClient(clientId, client, principal.getName());
+        return ResponseEntity.ok(updated);
     }
 
     @PreAuthorize("hasAuthority('SCOPE_read')")
     @GetMapping
-    public List<OAuthClientDto> list() {
-        return service.listClients();
+    public List<OAuthClient> listActive() {
+        return service.listActiveClients();
     }
 
     @PreAuthorize("hasAuthority('SCOPE_read')")
     @GetMapping("/{clientId}")
-    public OAuthClientDto get(@PathVariable String clientId) {
-        return service.getClient(clientId);
+    public ResponseEntity<?> get(@PathVariable String clientId) {
+        return service.getClientByClientId(clientId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_write')")
+    @PostMapping("/{clientId}/reset-secret")
+    public ResponseEntity<?> resetSecret(@PathVariable String clientId, @RequestBody String newSecret, Principal principal) {
+        service.resetClientSecret(clientId, newSecret, principal.getName());
+        return ResponseEntity.ok("Client secret reset");
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_write')")
+    @PostMapping("/{clientId}/deactivate")
+    public ResponseEntity<?> deactivate(@PathVariable String clientId, Principal principal) {
+        service.deactivateClient(clientId, principal.getName());
+        return ResponseEntity.ok("Client deactivated");
     }
 
     @PreAuthorize("hasAuthority('SCOPE_write')")
     @DeleteMapping("/{clientId}")
-    public ResponseEntity<?> delete(@PathVariable String clientId) {
-        service.deleteClient(clientId);
-        return ResponseEntity.ok("Client deleted successfully");
-    }
-
-    @PreAuthorize("hasAuthority('SCOPE_write')")
-    @PostMapping("/reset-secret")
-    public ResponseEntity<?> resetSecret(@RequestBody OAuthClientResetSecretRequest r) {
-        service.resetSecret(r.getClientId(), r.getNewSecret());
-        return ResponseEntity.ok("Client secret reset");
+    public ResponseEntity<?> delete(@PathVariable String clientId, Principal principal) {
+        service.deleteClient(clientId, principal.getName());
+        return ResponseEntity.ok("Client deleted");
     }
 }
