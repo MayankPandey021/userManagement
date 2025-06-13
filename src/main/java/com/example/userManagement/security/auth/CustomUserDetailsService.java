@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.stereotype.Service;
 
+
+// This service is used to load user-specific data for authentication and authorization
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -21,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         UserBuilder builder = org.springframework.security.core.userdetails.User.withUsername(user.getUsername());
         builder.password(user.getPassword());
-        builder.roles("USER"); // or fetch roles from your user entity
+//        builder.roles("USER"); // or fetch roles from your user entity
         return builder.build();
     }
 }

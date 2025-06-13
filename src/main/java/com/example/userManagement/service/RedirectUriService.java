@@ -77,20 +77,20 @@ public class RedirectUriService {
     }
 
 
-    public void addRedirectUri(String clientId, String uri, String createdBy) {
-        OAuthClient client = clientRepo.findByClientId(clientId)
-                .orElseThrow(() -> new ClientNotFoundException("Client not found"));
-
-        RedirectUri redirectUri = new RedirectUri();
-        redirectUri.setId(UUID.randomUUID().toString());
-        redirectUri.setClient(client);
-        redirectUri.setUri(uri);
-        redirectUri.setIsActive(true);
-        redirectUri.setIsDeleted(false);
-        redirectUri.setCreatedAt(LocalDate.now());
-        redirectUri.setCreatedBy(createdBy);
-        redirectUriRepo.save(redirectUri);
-    }
+//    public void addRedirectUri(String clientId, String uri, String createdBy) {
+//        OAuthClient client = clientRepo.findByClientId(clientId)
+//                .orElseThrow(() -> new ClientNotFoundException("Client not found"));
+//
+//        RedirectUri redirectUri = new RedirectUri();
+//        redirectUri.setId(UUID.randomUUID().toString());
+//        redirectUri.setClient(client);
+//        redirectUri.setUri(uri);
+//        redirectUri.setIsActive(true);
+//        redirectUri.setIsDeleted(false);
+//        redirectUri.setCreatedAt(LocalDate.now());
+//        redirectUri.setCreatedBy(createdBy);
+//        redirectUriRepo.save(redirectUri);
+//    }
 
     public void updateRedirectUriByClientIdAndUri(String clientId, String oldUri, String newUri, String updatedBy) {
         RedirectUri uri = redirectUriRepo.findByClient_ClientIdAndUriAndIsDeletedFalse(clientId, oldUri)

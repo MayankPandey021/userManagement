@@ -3,6 +3,7 @@ package com.example.userManagement.controller;
 import com.example.userManagement.dto.user.LoginRequest;
 import com.example.userManagement.dto.user.ResetPasswordRequest;
 import com.example.userManagement.dto.user.UserCreateRequest;
+import com.example.userManagement.dto.user.UserUpdateRequest;
 import com.example.userManagement.entity.User;
 import com.example.userManagement.service.UserService;
 import jakarta.validation.Valid;
@@ -26,12 +27,20 @@ public class UserController {
         return ResponseEntity.ok(service.createUser(r));
     }
 
-    @PostMapping("/login") // Usually public
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest r) {
         return service.login(r.username, r.password)
                 .map(u -> ResponseEntity.ok("Login successful"))
                 .orElse(ResponseEntity.status(401).body("Invalid credentials"));
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<String> updateUser(@PathVariable Long id,
+                                             @RequestBody UserUpdateRequest request) {
+        service.updateUser(id, request); // ✅ Instance call, not static
+        return ResponseEntity.ok("✅ User updated successfully.");
+    }
+
 
     @PreAuthorize("hasAuthority('SCOPE_read')")
     @GetMapping

@@ -18,7 +18,7 @@ public class ClientScope {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
-    @com.fasterxml.jackson.annotation.JsonBackReference
+    @com.fasterxml.jackson.annotation.JsonBackReference  //prevents infinite recursion
     private OAuthClient client;
 
     @Column(nullable = false, length = 255)

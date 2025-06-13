@@ -42,13 +42,27 @@ public class OAuthClientService {
 
     @Transactional
     public void updateClientDetails(String clientId, @Valid UpdateClientRequest request) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String updatedByUsername = auth.getName(); // 👈 fetch logged-in username
+
         OAuthClient client = clientRepo.findByClientId(clientId)
                 .orElseThrow(() -> new ClientNotFoundException("Client not found"));
 
-        client.setClientSecret(passwordEncoder.encode(request.getClientSecret()));
-        client.setAuthorizationGrantTypes(String.valueOf(request.getAuthorizationGrantTypes()));
-        client.setUpdatedAt(LocalDate.now());
-        client.setUpdatedBy(request.getUpdatedBy());
+        String updatedBy = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        if (request.getClientSecret() != null) {
+            client.setClientSecret(passwordEncoder.encode(request.getClientSecret()));
+        }
+
+        if (request.getAuthorizationGrantTypes() != null) {
+            client.setAuthorizationGrantTypes(String.valueOf(request.getAuthorizationGrantTypes()));
+        }
+
+
+
+        client.setUpdatedAt(LocalDate.now()); // always update timestamp
+        client.setUpdatedBy(updatedByUsername);
 
         if (request.getRedirectUris() != null) {
             Set<RedirectUri> redirectUris = request.getRedirectUris().stream().map(uriStr -> {
@@ -57,9 +71,11 @@ public class OAuthClientService {
                 uri.setUri(uriStr);
                 uri.setClient(client);
                 uri.setCreatedAt(LocalDate.now());
-                uri.setCreatedBy(request.getUpdatedBy());
+                uri.setCreatedBy(updatedBy);
                 uri.setIsActive(true);
                 uri.setIsDeleted(false);
+                uri.setUpdatedBy(updatedByUsername);
+                uri.setUpdatedAt(LocalDate.now());
                 return uri;
             }).collect(Collectors.toSet());
             client.getRedirectUris().clear();
@@ -72,9 +88,11 @@ public class OAuthClientService {
                 scope.setScope(scopeStr);
                 scope.setClient(client);
                 scope.setCreatedAt(LocalDate.now());
-                scope.setCreatedBy(request.getUpdatedBy());
+                scope.setCreatedBy(updatedBy);
                 scope.setIsActive(true);
                 scope.setIsDeleted(false);
+                scope.setUpdatedBy(updatedByUsername);
+                scope.setUpdatedAt(LocalDate.now());
                 return scope;
             }).collect(Collectors.toSet());
             client.getScopes().clear();
@@ -82,8 +100,8 @@ public class OAuthClientService {
         }
 
         clientRepo.save(client);
-        logger.info("Client [{}] details updated by {}", clientId, request.getUpdatedBy());
     }
+
 
     public OAuthClient createClient(@Valid CreateClientRequest request, String createdByUsername) {
         if (clientRepo.existsByClientId(request.getClientId())) {
@@ -244,75 +262,75 @@ public class OAuthClientService {
     // PRIVATE HELPERS
     // ===============================
 
-    private Set<RedirectUri> mergeRedirectUris(OAuthClient existing, List<RedirectUri> updatedUris, String updatedBy) {
-        Map<String, RedirectUri> existingMap = existing.getRedirectUris().stream()
-                .filter(uri -> !Boolean.TRUE.equals(uri.getIsDeleted()))
-                .collect(Collectors.toMap(RedirectUri::getId, Function.identity()));
+//    private Set<RedirectUri> mergeRedirectUris(OAuthClient existing, List<RedirectUri> updatedUris, String updatedBy) {
+//        Map<String, RedirectUri> existingMap = existing.getRedirectUris().stream()
+//                .filter(uri -> !Boolean.TRUE.equals(uri.getIsDeleted()))
+//                .collect(Collectors.toMap(RedirectUri::getId, Function.identity()));
+//
+//        Set<RedirectUri> result = new HashSet<>();
+//        for (RedirectUri updated : updatedUris) {
+//            if (updated.getId() != null && existingMap.containsKey(updated.getId())) {
+//                RedirectUri existingUri = existingMap.get(updated.getId());
+//                existingUri.setUri(updated.getUri());
+//                existingUri.setUpdatedAt(LocalDate.now());
+//                existingUri.setUpdatedBy(updatedBy);
+//                result.add(existingUri);
+//            } else {
+//                updated.setId(UUID.randomUUID().toString());
+//                updated.setClient(existing);
+//                updated.setCreatedAt(LocalDate.now());
+//                updated.setCreatedBy(existing.getCreatedBy());
+//                updated.setIsActive(true);
+//                updated.setIsDeleted(false);
+//                updated.setUpdatedAt(LocalDate.now());
+//                updated.setUpdatedBy(updatedBy);
+//                result.add(updated);
+//            }
+//        }
+//        return result;
+//    }
 
-        Set<RedirectUri> result = new HashSet<>();
-        for (RedirectUri updated : updatedUris) {
-            if (updated.getId() != null && existingMap.containsKey(updated.getId())) {
-                RedirectUri existingUri = existingMap.get(updated.getId());
-                existingUri.setUri(updated.getUri());
-                existingUri.setUpdatedAt(LocalDate.now());
-                existingUri.setUpdatedBy(updatedBy);
-                result.add(existingUri);
-            } else {
-                updated.setId(UUID.randomUUID().toString());
-                updated.setClient(existing);
-                updated.setCreatedAt(LocalDate.now());
-                updated.setCreatedBy(existing.getCreatedBy());
-                updated.setIsActive(true);
-                updated.setIsDeleted(false);
-                updated.setUpdatedAt(LocalDate.now());
-                updated.setUpdatedBy(updatedBy);
-                result.add(updated);
-            }
-        }
-        return result;
-    }
-
-    private Set<ClientScope> mergeScopes(OAuthClient existing, List<ClientScope> updatedScopes, String updatedBy) {
-        Map<String, ClientScope> existingMap = existing.getScopes().stream()
-                .filter(scope -> !Boolean.TRUE.equals(scope.getIsDeleted()))
-                .collect(Collectors.toMap(ClientScope::getId, Function.identity()));
-
-        Set<String> updatedIds = updatedScopes.stream()
-                .map(ClientScope::getId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-
-        Set<ClientScope> result = new HashSet<>();
-        for (ClientScope updated : updatedScopes) {
-            if (updated.getId() != null && existingMap.containsKey(updated.getId())) {
-                ClientScope existingScope = existingMap.get(updated.getId());
-                existingScope.setScope(updated.getScope());
-                existingScope.setUpdatedAt(LocalDate.now());
-                existingScope.setUpdatedBy(updatedBy);
-                result.add(existingScope);
-            } else {
-                updated.setClient(existing);
-                updated.setCreatedAt(LocalDate.now());
-                updated.setCreatedBy(existing.getCreatedBy());
-                updated.setIsActive(true);
-                updated.setIsDeleted(false);
-                updated.setUpdatedAt(LocalDate.now());
-                updated.setUpdatedBy(updatedBy);
-                result.add(updated);
-            }
-        }
-
-        // Mark removed scopes as deleted
-        for (ClientScope scope : existing.getScopes()) {
-            if (scope.getId() != null && !updatedIds.contains(scope.getId())) {
-                scope.setIsActive(false);
-                scope.setIsDeleted(true);
-                scope.setUpdatedAt(LocalDate.now());
-                scope.setUpdatedBy(updatedBy);
-                result.add(scope);
-            }
-        }
-
-        return result;
-    }
+//    private Set<ClientScope> mergeScopes(OAuthClient existing, List<ClientScope> updatedScopes, String updatedBy) {
+//        Map<String, ClientScope> existingMap = existing.getScopes().stream()
+//                .filter(scope -> !Boolean.TRUE.equals(scope.getIsDeleted()))
+//                .collect(Collectors.toMap(ClientScope::getId, Function.identity()));
+//
+//        Set<String> updatedIds = updatedScopes.stream()
+//                .map(ClientScope::getId)
+//                .filter(Objects::nonNull)
+//                .collect(Collectors.toSet());
+//
+//        Set<ClientScope> result = new HashSet<>();
+//        for (ClientScope updated : updatedScopes) {
+//            if (updated.getId() != null && existingMap.containsKey(updated.getId())) {
+//                ClientScope existingScope = existingMap.get(updated.getId());
+//                existingScope.setScope(updated.getScope());
+//                existingScope.setUpdatedAt(LocalDate.now());
+//                existingScope.setUpdatedBy(updatedBy);
+//                result.add(existingScope);
+//            } else {
+//                updated.setClient(existing);
+//                updated.setCreatedAt(LocalDate.now());
+//                updated.setCreatedBy(existing.getCreatedBy());
+//                updated.setIsActive(true);
+//                updated.setIsDeleted(false);
+//                updated.setUpdatedAt(LocalDate.now());
+//                updated.setUpdatedBy(updatedBy);
+//                result.add(updated);
+//            }
+//        }
+//
+//        // Mark removed scopes as deleted
+//        for (ClientScope scope : existing.getScopes()) {
+//            if (scope.getId() != null && !updatedIds.contains(scope.getId())) {
+//                scope.setIsActive(false);
+//                scope.setIsDeleted(true);
+//                scope.setUpdatedAt(LocalDate.now());
+//                scope.setUpdatedBy(updatedBy);
+//                result.add(scope);
+//            }
+//        }
+//
+//        return result;
+//    }
 }

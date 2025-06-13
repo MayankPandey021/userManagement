@@ -15,7 +15,6 @@ public class UpdateClientRequest {
 
     private List<String> scopes;
 
-    private String updatedBy;
 
-    private List<String> authorizationGrantTypes; // ✅ Added this field
+    private List<String> authorizationGrantTypes;
 }

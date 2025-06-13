@@ -3,6 +3,7 @@ import com.example.userManagement.entity.ClientScope;
 import com.example.userManagement.entity.OAuthClient;
 import com.example.userManagement.entity.RedirectUri;
 import com.example.userManagement.repository.OAuthClientRepository;
+import jakarta.persistence.Converts;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -13,6 +14,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.time.LocalDate;
 
+
+// Bridge between Spring Authorization Server and the application's OAuthClient entity.
 @Component
 public class JpaRegisteredClientRepository implements RegisteredClientRepository {
     private final OAuthClientRepository repo;
@@ -22,6 +25,8 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
     }
 
 
+
+   //  Converts and saves a RegisteredClient as an OAuthClient entity.
     @Override
     public void save(RegisteredClient registeredClient) {
         OAuthClient entity = new OAuthClient();
@@ -77,18 +82,8 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
     }
 
 
-//    @Override
-//    public RegisteredClient findById(String id) {
-//        Optional<OAuthClient> client = repo.findById(id);
-//        return client.map(this::toRegisteredClient).orElse(null);
-//    }
-//
-//    @Override
-//    public RegisteredClient findByClientId(String clientId) {
-//        Optional<OAuthClient> client = repo.findByClientIdWithDetails(clientId);
-//        return client.map(this::toRegisteredClient).orElse(null);
-//    }
 
+    // Finds an active client by ID and converts it to RegisteredClient.
     @Override
     public RegisteredClient findById(String id) {
         Optional<OAuthClient> client = repo.findById(id);
@@ -98,7 +93,7 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
         return toRegisteredClient(client.get());
     }
 
-    //  Ensures inactive clients cannot be used for authentication or token issuance
+   // Finds an active client by clientId and converts it to RegisteredClient.
     @Override
     public RegisteredClient findByClientId(String clientId) {
         Optional<OAuthClient> client = repo.findByClientIdWithDetails(clientId);
@@ -108,6 +103,7 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
         return toRegisteredClient(client.get());
     }
 
+   // Converts OAuthClient entity to RegisteredClient for use by Spring Authorization Server.
    private RegisteredClient toRegisteredClient(OAuthClient entity) {
        if (entity.getRedirectUris() == null || entity.getRedirectUris().isEmpty()) {
            throw new IllegalArgumentException("OAuthClient must have at least one redirect URI");

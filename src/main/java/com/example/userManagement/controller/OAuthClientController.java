@@ -29,7 +29,7 @@ public class OAuthClientController {
         return ResponseEntity.ok("Client created");
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<List<OAuthClientList>> listClients() {
         return ResponseEntity.ok(clientService.getClients());
     }
@@ -59,12 +59,14 @@ public class OAuthClientController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{clientId}")
-    public ResponseEntity<Void> updateClient(@PathVariable String clientId,
-                                             @Valid @RequestBody UpdateClientRequest request) {
-        clientService.updateClientDetails(clientId, request); // ✅ Correct
-        return ResponseEntity.ok().build();
+
+    @PatchMapping("/{clientId}")
+    public ResponseEntity<String> updateClient(@PathVariable String clientId,
+                                               @RequestBody UpdateClientRequest request) {
+        clientService.updateClientDetails(clientId, request);
+        return ResponseEntity.ok("✅ Client updated successfully.");
     }
+
     @DeleteMapping("/{clientId}")
     public ResponseEntity<Void> deleteClient(@PathVariable String clientId) {
         clientService.deleteClient(clientId);

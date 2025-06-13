@@ -1,6 +1,5 @@
 package com.example.userManagement.service;
 
-import com.example.userManagement.dto.*;
 import com.example.userManagement.dto.scopes.CreateScopeRequest;
 import com.example.userManagement.dto.scopes.ScopeDetailResponse;
 import com.example.userManagement.dto.scopes.ScopeResponse;

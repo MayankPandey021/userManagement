@@ -16,6 +16,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 
+// This configuration class sets up the authorization server for OAuth2
 @Configuration
 public class AuthorizationServerConfig {
 
@@ -60,13 +61,4 @@ public class AuthorizationServerConfig {
         return http.build();
     }
 
-    // Uncomment if you want to use in-memory user details and do the changes accordingly
-//    @Bean
-//    public UserDetailsService users(PasswordEncoder passwordEncoder) {
-//        UserDetails user = User.withUsername(userUsername)
-//                .password(passwordEncoder.encode(userPassword))
-//                .roles("USER")
-//                .build();
-//        return new InMemoryUserDetailsManager(user);
-//    }
 }

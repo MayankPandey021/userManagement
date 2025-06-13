@@ -16,7 +16,7 @@ public class RedirectUri {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference //prevents infinite recursion
     private OAuthClient client;
 
     @Column(nullable = false, length = 1024)

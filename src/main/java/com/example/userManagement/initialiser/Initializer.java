@@ -21,17 +21,19 @@ import java.time.LocalDate;
 
 @Configuration
 public class Initializer {
+
 // http://localhost:8080/oauth2/authorize?response_type=code&client_id=imposter2&redirect_uri=http://localhost:8080/login/oauth2/code/imposter2&scope=read%20write
+
     @Bean
-    public CommandLineRunner addAnotherClient(JpaRegisteredClientRepository repo, PasswordEncoder encoder) {
+    public CommandLineRunner addDefaultClient(JpaRegisteredClientRepository repo, PasswordEncoder encoder) {
         return args -> {
-            if (repo.findByClientId("leonardo") == null) {
+            if (repo.findByClientId("paul") == null) {
                 RegisteredClient client = RegisteredClient.withId(UUID.randomUUID().toString())
-                        .clientId("leonardo")
-                        .clientSecret(encoder.encode("leonardo"))
+                        .clientId("paul")
+                        .clientSecret(encoder.encode("paul"))
                         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                         .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                        .redirectUri("http://localhost:8080/login/oauth2/code/leonardo")
+                        .redirectUri("http://localhost:8080/login/oauth2/code/paul")
                         .scope("read")
                         .scope("write")
 
@@ -66,21 +68,4 @@ public class Initializer {
         };
     }
 
-//    @Bean
-//    public CommandLineRunner addDefaultClient(JpaRegisteredClientRepository repo, PasswordEncoder encoder) {
-//        return args -> {
-//            if (repo.findByClientId("my-client") == null) {
-//                RegisteredClient client = RegisteredClient.withId(UUID.randomUUID().toString())
-//                        .clientId("my-client")
-//                        .clientSecret(encoder.encode("my-secret"))
-//                        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-//                        .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-//                        .redirectUri("http://localhost:8080/login/oauth2/code/my-client") // <-- required
-//                        .scope("read")
-//                        .scope("write")
-//                        .build();
-//                repo.save(client);
-//            }
-//        };
-//    }
 }

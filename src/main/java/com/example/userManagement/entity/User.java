@@ -19,10 +19,10 @@ public class User {
     @Convert(converter = EncryptionConverter.class)
     private String email;
 
-   // @Convert(converter = EncryptionConverter.class)
+
     private String mobile;
 
-//    @Convert(converter = EncryptionConverter.class)
+
     @Column(unique = true)
     private String username;
 

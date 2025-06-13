@@ -10,8 +10,11 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByUsername(String username);
+
+//    static Optional<User> findById(Long id);
+
+    Optional<User> findByUsername(String username); // This is a method name-based query (or Derived Query)
 
     @Query("SELECT u FROM User u WHERE u.isDeleted = false")
-    List<User> findAllNonDeletedUsers();
+    List<User> findAllNonDeletedUsers();  // When findAllNonDeletedUsers() is called, run this JPQL query.
 }

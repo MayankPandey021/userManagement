@@ -1,6 +1,6 @@
 package com.example.userManagement.controller;
 
-import com.example.userManagement.dto.*;
+//import com.example.userManagement.dto.*;
 import com.example.userManagement.dto.scopes.CreateScopeRequest;
 import com.example.userManagement.dto.scopes.ScopeDetailResponse;
 import com.example.userManagement.dto.scopes.ScopeResponse;
@@ -21,7 +21,7 @@ public class ClientScopeController {
     private final ClientScopeService clientScopeService;
 
 
-    // i dont think so this sud be der
+    // Is it required?
     @PostMapping("/create")
     public ResponseEntity<Void> createScope(@Valid @RequestBody CreateScopeRequest request) {
         clientScopeService.createScope(request);

@@ -1,6 +1,7 @@
 package com.example.userManagement.service;
 
 import com.example.userManagement.dto.user.UserCreateRequest;
+import com.example.userManagement.dto.user.UserUpdateRequest;
 import com.example.userManagement.entity.User;
 import com.example.userManagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +38,24 @@ public class UserService {
                 .filter(u -> encoder.matches(rawPwd, u.getPassword()));
     }
 
+    public  void updateUser(Long id, UserUpdateRequest request) {
+
+        User user = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (request.firstName != null) user.setFirstName(request.firstName);
+        if (request.middleName != null) user.setMiddleName(request.middleName);
+        if (request.lastName != null) user.setLastName(request.lastName);
+        if (request.email != null) user.setEmail(request.email);
+        if (request.mobile != null) user.setMobile(request.mobile);
+        if (request.username != null) user.setUsername(request.username);
+        if (request.password != null) user.setPassword(encoder.encode(request.password)); // Assuming encryption
+
+        repo.save(user);
+    }
 
 
-   public List<User> listUsers() {
+    public List<User> listUsers() {
        return repo.findAllNonDeletedUsers();
    }
 
@@ -50,18 +66,24 @@ public class UserService {
     }
 
     public void resetPassword(String username, String newPassword) {
+
         User u = repo.findByUsername(username)
                 .filter(user -> !user.isDeleted())
                 .orElseThrow();
+
         u.setPassword(encoder.encode(newPassword));
         repo.save(u);
     }
 
+
     public void deleteUser(Long id) {
+
         User user = repo.findById(id)
                 .filter(u -> !u.isDeleted())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         user.setIsDeleted(true);
         repo.save(user);
+
     }
+
 }

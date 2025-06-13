@@ -43,13 +43,18 @@ public class OAuthClient {
 
 
     @Column(nullable = false)
-    private String authorizationGrantTypes = "authorization_code,refresh_token";
+    private String authorizationGrantTypes;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL,
+//            orphanRemoval = true,
+            fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<RedirectUri> redirectUris = new HashSet<>();
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL,
+//            orphanRemoval = true,
+            fetch = FetchType.LAZY) // // Lazy loading improves performance by loading scopes only when accessed
     private Set<ClientScope> scopes = new HashSet<>();
 
     public void setRedirectUris(Set<RedirectUri> redirectUris) {
