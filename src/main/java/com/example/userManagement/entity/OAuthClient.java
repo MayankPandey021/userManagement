@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.util.HashSet;
 
 @Entity
 @Table(name = "oauth_client")
@@ -44,10 +46,11 @@ public class OAuthClient {
     private String authorizationGrantTypes = "authorization_code,refresh_token";
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<RedirectUri> redirectUris;
+    @JsonManagedReference
+    private Set<RedirectUri> redirectUris = new HashSet<>();
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<ClientScope> scopes;
+    private Set<ClientScope> scopes = new HashSet<>();
 
     public void setRedirectUris(Set<RedirectUri> redirectUris) {
         this.redirectUris = redirectUris;

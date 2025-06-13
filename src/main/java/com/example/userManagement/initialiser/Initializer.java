@@ -21,17 +21,17 @@ import java.time.LocalDate;
 
 @Configuration
 public class Initializer {
-// http://localhost:8080/oauth2/authorize?response_type=code&client_id=raj&redirect_uri=http://localhost:8080/login/oauth2/code/raj&scope=read%20write
+// http://localhost:8080/oauth2/authorize?response_type=code&client_id=imposter2&redirect_uri=http://localhost:8080/login/oauth2/code/imposter2&scope=read%20write
     @Bean
     public CommandLineRunner addAnotherClient(JpaRegisteredClientRepository repo, PasswordEncoder encoder) {
         return args -> {
-            if (repo.findByClientId("poetry") == null) {
+            if (repo.findByClientId("leonardo") == null) {
                 RegisteredClient client = RegisteredClient.withId(UUID.randomUUID().toString())
-                        .clientId("poetry")
-                        .clientSecret(encoder.encode("poetry"))
+                        .clientId("leonardo")
+                        .clientSecret(encoder.encode("leonardo"))
                         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                         .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                        .redirectUri("http://localhost:8080/logins/oauth2/code/poetry")
+                        .redirectUri("http://localhost:8080/login/oauth2/code/leonardo")
                         .scope("read")
                         .scope("write")
 

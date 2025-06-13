@@ -1,69 +1,73 @@
-// src/main/java/com/example/userManagement/controller/OAuthClientController.java
 package com.example.userManagement.controller;
 
+import com.example.userManagement.dto.client.*;
 import com.example.userManagement.entity.OAuthClient;
 import com.example.userManagement.service.OAuthClientService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.userManagement.service.OAuthClientService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/oauth-clients")
+@RequestMapping("/api/clients")
+@RequiredArgsConstructor
 public class OAuthClientController {
 
-    @Autowired
-    private OAuthClientService service;
+    private final OAuthClientService clientService;
 
-    @PreAuthorize("hasAuthority('SCOPE_write')")
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody OAuthClient client, Principal principal) {
-        OAuthClient created = service.createClient(client, principal.getName());
-        return ResponseEntity.ok(created);
+    public ResponseEntity<?> createClient(@RequestBody @Valid CreateClientRequest request) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName(); // 👈 gets the current logged-in username
+
+        clientService.createClient(request, username); // ✅ fixed: two parameters now
+        return ResponseEntity.ok("Client created");
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_write')")
-    @PutMapping("/{clientId}")
-    public ResponseEntity<?> update(@PathVariable String clientId, @RequestBody OAuthClient client, Principal principal) {
-        OAuthClient updated = service.updateClient(clientId, client, principal.getName());
-        return ResponseEntity.ok(updated);
+    @GetMapping("/list")
+    public ResponseEntity<List<OAuthClientList>> listClients() {
+        return ResponseEntity.ok(clientService.getClients());
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_read')")
-    @GetMapping
-    public List<OAuthClient> listActive() {
-        return service.listActiveClients();
-    }
-
-    @PreAuthorize("hasAuthority('SCOPE_read')")
     @GetMapping("/{clientId}")
-    public ResponseEntity<?> get(@PathVariable String clientId) {
-        return service.getClientByClientId(clientId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<OAuthClient> getClientById(@PathVariable String clientId) {
+        return ResponseEntity.ok(
+                clientService.getClientByClientId(clientId)
+                        .orElseThrow(() -> new RuntimeException("Client not found"))
+        );
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_write')")
-    @PostMapping("/{clientId}/reset-secret")
-    public ResponseEntity<?> resetSecret(@PathVariable String clientId, @RequestBody String newSecret, Principal principal) {
-        service.resetClientSecret(clientId, newSecret, principal.getName());
-        return ResponseEntity.ok("Client secret reset");
+    @PatchMapping("/{clientId}/deactivate")
+    public ResponseEntity<Void> deactivateClient(@PathVariable String clientId) {
+        clientService.deactivateClient(clientId);
+        return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_write')")
-    @PostMapping("/{clientId}/deactivate")
-    public ResponseEntity<?> deactivate(@PathVariable String clientId, Principal principal) {
-        service.deactivateClient(clientId, principal.getName());
-        return ResponseEntity.ok("Client deactivated");
+
+    @PatchMapping("/{clientId}/reset-secret")
+    public ResponseEntity<Void> resetClientSecret(@PathVariable String clientId,
+                                                  @Valid @RequestBody ResetSecretRequest request) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String updatedBy = auth.getName(); // 👈 gets the currently logged-in username
+
+        clientService.resetClientSecret(clientId, request.getNewSecret(), updatedBy);
+        return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_write')")
+    @PutMapping("/{clientId}")
+    public ResponseEntity<Void> updateClient(@PathVariable String clientId,
+                                             @Valid @RequestBody UpdateClientRequest request) {
+        clientService.updateClientDetails(clientId, request); // ✅ Correct
+        return ResponseEntity.ok().build();
+    }
     @DeleteMapping("/{clientId}")
-    public ResponseEntity<?> delete(@PathVariable String clientId, Principal principal) {
-        service.deleteClient(clientId, principal.getName());
-        return ResponseEntity.ok("Client deleted");
+    public ResponseEntity<Void> deleteClient(@PathVariable String clientId) {
+        clientService.deleteClient(clientId);
+        return ResponseEntity.ok().build();
     }
 }

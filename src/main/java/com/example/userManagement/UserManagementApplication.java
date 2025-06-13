@@ -12,11 +12,18 @@ public class UserManagementApplication {
 		SpringApplication.run(UserManagementApplication.class, args);
 	}
 
-	//Aes 256
-	//role based access control
-	// Make the repo readable.
-	// Initialisation for each - (Initializer.java)
-	// Understand the flow of the code
 
-	//mimic the entire flow for oAuthClient- 1 day, redirectUri-0.5 day, clientScope -0.5 day ..total 2 days.
+
+    //patch
+	// CRUD - 5 apis ,  2 for read - > entireRead and ByDetails , Patch -> comes under update.
+
+	// ToDo :
+
+
+
+
+	// Day 2:
+	// 4) Refactor if necessary ,Refine Code , add comments , make use of AES 256 ,
+	// make use of environmental variables , test the client data against a record of 10K clients.
+	// 5) Understand the flow of code.
 }

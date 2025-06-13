@@ -47,8 +47,8 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
                     redirectUri.setClient(entity);
                     redirectUri.setCreatedAt(entity.getCreatedAt());
                     redirectUri.setCreatedBy(entity.getCreatedBy());
-                    redirectUri.setActive(entity.getActive());
-                    redirectUri.setDeleted(entity.getDeleted());
+                    redirectUri.setIsActive(entity.getActive());
+                    redirectUri.setIsDeleted(entity.getDeleted());
                     redirectUri.setUpdatedAt(entity.getUpdatedAt());
                     redirectUri.setUpdatedBy(entity.getUpdatedBy());
                     return redirectUri;
@@ -64,8 +64,8 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
                     clientScope.setClient(entity);
                     clientScope.setCreatedAt(entity.getCreatedAt());
                     clientScope.setCreatedBy(entity.getCreatedBy());
-                    clientScope.setActive(entity.getActive());
-                    clientScope.setDeleted(entity.getDeleted());
+                    clientScope.setIsActive(entity.getActive());
+                    clientScope.setIsDeleted(entity.getDeleted());
                     clientScope.setUpdatedAt(entity.getUpdatedAt());
                     clientScope.setUpdatedBy(entity.getUpdatedBy());
                     return clientScope;
@@ -75,16 +75,37 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
 
         repo.save(entity);
     }
+
+
+//    @Override
+//    public RegisteredClient findById(String id) {
+//        Optional<OAuthClient> client = repo.findById(id);
+//        return client.map(this::toRegisteredClient).orElse(null);
+//    }
+//
+//    @Override
+//    public RegisteredClient findByClientId(String clientId) {
+//        Optional<OAuthClient> client = repo.findByClientIdWithDetails(clientId);
+//        return client.map(this::toRegisteredClient).orElse(null);
+//    }
+
     @Override
     public RegisteredClient findById(String id) {
         Optional<OAuthClient> client = repo.findById(id);
-        return client.map(this::toRegisteredClient).orElse(null);
+        if (client.isEmpty() || !Boolean.TRUE.equals(client.get().getActive())) {
+            return null;
+        }
+        return toRegisteredClient(client.get());
     }
 
+    //  Ensures inactive clients cannot be used for authentication or token issuance
     @Override
     public RegisteredClient findByClientId(String clientId) {
         Optional<OAuthClient> client = repo.findByClientIdWithDetails(clientId);
-        return client.map(this::toRegisteredClient).orElse(null);
+        if (client.isEmpty() || !Boolean.TRUE.equals(client.get().getActive())) {
+            return null;
+        }
+        return toRegisteredClient(client.get());
     }
 
    private RegisteredClient toRegisteredClient(OAuthClient entity) {
