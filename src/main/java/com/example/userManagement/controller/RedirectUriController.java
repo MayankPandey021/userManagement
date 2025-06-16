@@ -2,7 +2,7 @@ package com.example.userManagement.controller;
 
 import com.example.userManagement.dto.redirectUri.*;
 import com.example.userManagement.entity.RedirectUri;
-import com.example.userManagement.service.RedirectUriService;
+import com.example.userManagement.service.implementation.RedirectUriService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +22,12 @@ public class RedirectUriController {
 
     @GetMapping("/all")
     public ResponseEntity<List<ClientRedirectUrisResponse>> getAllRedirectUris() {
-        return ResponseEntity.ok(redirectUriService.getAllActiveRedirectUrisGroupedByClient());
+        return ResponseEntity.ok(redirectUriService.getAllActiveRedirectUrisByClientId());
     }
 
     @GetMapping("/client/{clientId}")
     public ResponseEntity<List<RedirectUriResponse>> getRedirectUris(@PathVariable String clientId) {
-        List<RedirectUri> uris = redirectUriService.getRedirectUrisByClient(clientId);
+        List<RedirectUri> uris = redirectUriService.getRedirectUrisByClientId(clientId);
         List<RedirectUriResponse> responseList = uris.stream().map(uri -> {
             RedirectUriResponse res = new RedirectUriResponse();
             res.setId(uri.getId());
@@ -55,7 +55,7 @@ public class RedirectUriController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
 
-        redirectUriService.updateRedirectUriByClientIdAndUri(clientId, request.getOldUri(), request.getNewUri(), username);
+        redirectUriService.updateRedirectUri(clientId, request.getOldUri(), request.getNewUri(), username);
         return ResponseEntity.ok().build();
     }
 
@@ -64,7 +64,7 @@ public class RedirectUriController {
                                                                   @Valid @RequestBody DeleteRedirectUriRequest request) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
-        redirectUriService.deleteRedirectUriByClientIdAndUri(clientId, request.getUri(), username);
+        redirectUriService.deleteRedirectUri(clientId, request.getUri(), username);
         return ResponseEntity.ok().build();
     }
 

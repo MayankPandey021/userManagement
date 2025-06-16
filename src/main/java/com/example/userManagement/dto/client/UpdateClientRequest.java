@@ -15,6 +15,8 @@ public class UpdateClientRequest {
 
     private List<String> scopes;
 
+    private Boolean isActive; // For patching active status
+
 
     private List<String> authorizationGrantTypes;
 }

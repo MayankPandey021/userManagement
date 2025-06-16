@@ -1,4 +1,4 @@
-package com.example.userManagement.service;
+package com.example.userManagement.service.implementation;
 
 import com.example.userManagement.dto.scopes.CreateScopeRequest;
 import com.example.userManagement.dto.scopes.ScopeDetailResponse;
@@ -8,6 +8,7 @@ import com.example.userManagement.entity.ClientScope;
 import com.example.userManagement.entity.OAuthClient;
 import com.example.userManagement.repository.ClientScopeRepository;
 import com.example.userManagement.repository.OAuthClientRepository;
+import com.example.userManagement.service.abstraction.IClientScopeService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ClientScopeService {
+public class ClientScopeService implements IClientScopeService {
 
     private final ClientScopeRepository clientScopeRepository;
     private final OAuthClientRepository oAuthClientRepository;
 
     @Transactional
+    @Override
     public void createScope(CreateScopeRequest request) {
         if (clientScopeRepository.existsByClient_ClientIdAndScopeAndIsDeletedFalse(request.getClientId(), request.getScope())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Scope already exists for this client");
@@ -42,7 +44,8 @@ public class ClientScopeService {
         clientScopeRepository.save(scope);
     }
 
-    public List<ScopeResponse> listScopes() {
+    @Override
+    public List<ScopeResponse> getScopes() {
         return clientScopeRepository.findAll().stream()
                 .filter(scope -> !Boolean.TRUE.equals(scope.getIsDeleted()))
                 .map(scope -> {
@@ -53,6 +56,7 @@ public class ClientScopeService {
                 }).collect(Collectors.toList());
     }
 
+    @Override
     public List<ScopeDetailResponse> getScopesByClientId(String clientId) {
         List<ClientScope> scopes = clientScopeRepository.findByClient_ClientIdAndIsDeletedFalse(clientId);
         if (scopes.isEmpty()) {
@@ -74,6 +78,7 @@ public class ClientScopeService {
     }
 
     @Transactional
+    @Override
     public void updateScope(UpdateScopeRequest request) {
         ClientScope scope = clientScopeRepository
                 .findByClient_ClientIdAndScopeAndIsDeletedFalse(request.getClientId(), request.getOldScope())
@@ -89,6 +94,7 @@ public class ClientScopeService {
     }
 
     @Transactional
+    @Override
     public void deleteScope(String clientId) {
         List<ClientScope> scopes = clientScopeRepository.findByClient_ClientIdAndIsDeletedFalse(clientId);
         if (scopes.isEmpty()) {
@@ -97,13 +103,14 @@ public class ClientScopeService {
 
         for (ClientScope scope : scopes) {
             scope.setIsDeleted(true);
-            scope.setIsActive(false);  // <- deactivate scope
+            scope.setIsActive(false);
             scope.setUpdatedAt(LocalDate.now());
             clientScopeRepository.save(scope);
         }
     }
 
     @Transactional
+    @Override
     public void addScope(CreateScopeRequest request) {
         createScope(request);
     }

@@ -20,4 +20,6 @@ public class UserUpdateRequest {
 
     @Size(min = 5, message = "Password must be at least 5 characters")
     public String password;
+
+    public boolean isActive;
 }

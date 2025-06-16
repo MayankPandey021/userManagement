@@ -4,8 +4,9 @@ import com.example.userManagement.dto.user.LoginRequest;
 import com.example.userManagement.dto.user.ResetPasswordRequest;
 import com.example.userManagement.dto.user.UserCreateRequest;
 import com.example.userManagement.dto.user.UserUpdateRequest;
+import com.example.userManagement.dto.user.UserResponseDto;
 import com.example.userManagement.entity.User;
-import com.example.userManagement.service.UserService;
+import com.example.userManagement.service.implementation.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('SCOPE_write')")
     @PostMapping("/create")
-    public ResponseEntity<?> create(@Valid @RequestBody UserCreateRequest r) {
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserCreateRequest r) {
         return ResponseEntity.ok(service.createUser(r));
     }
 
@@ -42,16 +43,15 @@ public class UserController {
     }
 
 
-    @PreAuthorize("hasAuthority('SCOPE_read')")
     @GetMapping
-    public List<User> list() {
-        return service.listUsers();
+    public List<UserResponseDto> getUsers() {
+        return service.getUsers();
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_read')")
     @GetMapping("/{id}")
-    public User get(@PathVariable Long id) {
-        return service.getUser(id);
+    @PreAuthorize("hasAuthority('SCOPE_read')")
+    public UserResponseDto getUserById(@PathVariable Long id) {
+        return service.getUserById(id);
     }
 
     @PreAuthorize("hasAuthority('SCOPE_write')")
@@ -63,7 +63,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('SCOPE_write')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         service.deleteUser(id);
         return ResponseEntity.ok("User deleted successfully");
     }

@@ -2,8 +2,7 @@ package com.example.userManagement.controller;
 
 import com.example.userManagement.dto.client.*;
 import com.example.userManagement.entity.OAuthClient;
-import com.example.userManagement.service.OAuthClientService;
-import com.example.userManagement.service.OAuthClientService;
+import com.example.userManagement.service.implementation.OAuthClientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,40 +29,28 @@ public class OAuthClientController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OAuthClientList>> listClients() {
+    public ResponseEntity<List<OAuthClientList>> getClients() {
         return ResponseEntity.ok(clientService.getClients());
     }
 
     @GetMapping("/{clientId}")
-    public ResponseEntity<OAuthClient> getClientById(@PathVariable String clientId) {
+    public ResponseEntity<OAuthClient> getClientByClientId(@PathVariable String clientId) {
         return ResponseEntity.ok(
                 clientService.getClientByClientId(clientId)
                         .orElseThrow(() -> new RuntimeException("Client not found"))
         );
     }
 
-    @PatchMapping("/{clientId}/deactivate")
-    public ResponseEntity<Void> deactivateClient(@PathVariable String clientId) {
-        clientService.deactivateClient(clientId);
-        return ResponseEntity.ok().build();
-    }
 
 
-    @PatchMapping("/{clientId}/reset-secret")
-    public ResponseEntity<Void> resetClientSecret(@PathVariable String clientId,
-                                                  @Valid @RequestBody ResetSecretRequest request) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String updatedBy = auth.getName(); // 👈 gets the currently logged-in username
 
-        clientService.resetClientSecret(clientId, request.getNewSecret(), updatedBy);
-        return ResponseEntity.ok().build();
-    }
+
 
 
     @PatchMapping("/{clientId}")
     public ResponseEntity<String> updateClient(@PathVariable String clientId,
                                                @RequestBody UpdateClientRequest request) {
-        clientService.updateClientDetails(clientId, request);
+        clientService.updateClient(clientId, request);
         return ResponseEntity.ok("✅ Client updated successfully.");
     }
 
