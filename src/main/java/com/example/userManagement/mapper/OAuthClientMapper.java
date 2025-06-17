@@ -24,44 +24,44 @@ public class OAuthClientMapper {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public OAuthClient mapCreateRequestToEntity(CreateClientRequest request, String createdBy) {
-        OAuthClient client = new OAuthClient();
-        client.setClientId(request.getClientId());
-        client.setClientSecret(passwordEncoder.encode(request.getClientSecret()));
-        client.setAuthorizationGrantTypes(String.valueOf(request.getAuthorizationGrantTypes()));
-        client.setCreatedAt(LocalDate.now());
-        client.setCreatedBy(createdBy);
-        client.setActive(true);
-        client.setDeleted(false);
+//    public OAuthClient mapCreateRequestToEntity(CreateClientRequest request, String createdBy) {
+//        OAuthClient client = new OAuthClient();
+//        client.setClientId(request.getClientId());
+//        client.setClientSecret(passwordEncoder.encode(request.getClientSecret()));
+//        client.setAuthorizationGrantTypes(String.valueOf(request.getAuthorizationGrantTypes()));
+//        client.setCreatedAt(LocalDate.now());
+//        client.setCreatedBy(createdBy);
+//        client.setActive(true);
+//        client.setDeleted(false);
+//
+//        client.setRedirectUris(mapRedirectUris(request.getRedirectUris(), client, createdBy));
+//        client.setScopes(mapScopes(request.getScopes(), client, createdBy));
+//
+//        return client;
+//    }
 
-        client.setRedirectUris(mapRedirectUris(request.getRedirectUris(), client, createdBy));
-        client.setScopes(mapScopes(request.getScopes(), client, createdBy));
-
-        return client;
-    }
-
-    public void mapUpdateRequestToEntity(OAuthClient client, UpdateClientRequest request, String updatedBy) {
-        if (request.getClientSecret() != null) {
-            client.setClientSecret(passwordEncoder.encode(request.getClientSecret()));
-        }
-
-        if (request.getAuthorizationGrantTypes() != null) {
-            client.setAuthorizationGrantTypes(String.valueOf(request.getAuthorizationGrantTypes()));
-        }
-
-        if (request.getRedirectUris() != null) {
-            client.getRedirectUris().clear();
-            client.getRedirectUris().addAll(mapRedirectUris(request.getRedirectUris(), client, updatedBy));
-        }
-
-        if (request.getScopes() != null) {
-            client.getScopes().clear();
-            client.getScopes().addAll(mapScopes(request.getScopes(), client, updatedBy));
-        }
-
-        client.setUpdatedAt(LocalDate.now());
-        client.setUpdatedBy(updatedBy);
-    }
+//    public void mapUpdateRequestToEntity(OAuthClient client, UpdateClientRequest request, String updatedBy) {
+//        if (request.getClientSecret() != null) {
+//            client.setClientSecret(passwordEncoder.encode(request.getClientSecret()));
+//        }
+//
+//        if (request.getAuthorizationGrantTypes() != null) {
+//            client.setAuthorizationGrantTypes(String.valueOf(request.getAuthorizationGrantTypes()));
+//        }
+//
+//        if (request.getRedirectUris() != null) {
+//            client.getRedirectUris().clear();
+//            client.getRedirectUris().addAll(mapRedirectUris(request.getRedirectUris(), client, updatedBy));
+//        }
+//
+//        if (request.getScopes() != null) {
+//            client.getScopes().clear();
+//            client.getScopes().addAll(mapScopes(request.getScopes(), client, updatedBy));
+//        }
+//
+//        client.setUpdatedAt(LocalDate.now());
+//        client.setUpdatedBy(updatedBy);
+//    }
 
     public Set<RedirectUri> mapRedirectUris(List<String> uris, OAuthClient client, String createdBy) {
         if (uris == null) return Set.of();

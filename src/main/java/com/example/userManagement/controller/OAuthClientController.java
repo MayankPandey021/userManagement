@@ -2,7 +2,7 @@ package com.example.userManagement.controller;
 
 import com.example.userManagement.dto.client.*;
 import com.example.userManagement.entity.OAuthClient;
-import com.example.userManagement.service.implementation.OAuthClientService;
+import com.example.userManagement.service.Implementation.OAuthClientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

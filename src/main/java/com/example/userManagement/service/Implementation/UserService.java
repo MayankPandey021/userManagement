@@ -102,4 +102,8 @@ public class UserService implements IUserService {
         user.setIsDeleted(true);
         repo.save(user);
     }
+
+    public Optional<User> findByUsername(String username) {
+        return repo.findByUsername(username);
+    }
 }

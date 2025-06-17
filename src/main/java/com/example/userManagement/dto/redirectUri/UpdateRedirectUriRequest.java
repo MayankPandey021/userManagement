@@ -5,6 +5,8 @@ import lombok.Data;
 
 @Data
 public class UpdateRedirectUriRequest {
-    @NotBlank private String oldUri;
-    @NotBlank private String newUri;
+    @NotBlank
+    private String oldUri;
+    @NotBlank
+    private String newUri;
 }

@@ -19,11 +19,9 @@ public class UserManagementApplication {
 	// ToDo :
 
 
-	//Suggestions :
-	// 1) Have Proper naming conventions(files , endpoints , methods).
-	// 2) Compartmentalize the code properly.
-	// 3) Log when performing CRUD operations(postman)
-	// 4) Exception handling
+   // 1) use rsa for refresh token - done
+	//2)  update client api
+	//3)  initialiser.java - done
 
 
 }

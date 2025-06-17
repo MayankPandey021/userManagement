@@ -1,4 +1,4 @@
-package com.example.userManagement.service.implementation;
+package com.example.userManagement.service.Implementation;
 
 import com.example.userManagement.dto.client.CreateClientRequest;
 import com.example.userManagement.dto.client.OAuthClientList;
@@ -36,7 +36,7 @@ public class OAuthClientService implements IOAuthClientService {
     private OAuthClientRepository clientRepo;
 
     @Autowired
-    private UserService userService;
+    private com.example.userManagement.service.implementation.UserService userService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
