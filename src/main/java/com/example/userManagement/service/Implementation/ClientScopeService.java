@@ -30,7 +30,7 @@ public class ClientScopeService implements IClientScopeService {
 
     @Transactional
     @Override
-    public void createScope(CreateScopeRequest request) {
+    public void create(CreateScopeRequest request) {
         if (clientScopeRepository.existsByClient_ClientIdAndScopeAndIsDeletedFalse(request.getClientId(), request.getScope())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Scope already exists for this client");
         }
@@ -43,7 +43,7 @@ public class ClientScopeService implements IClientScopeService {
     }
 
     @Override
-    public List<ScopeResponse> getScopes() {
+    public List<ScopeResponse> get() {
         return clientScopeRepository.findAll().stream()
                 .filter(scope -> !Boolean.TRUE.equals(scope.getIsDeleted()))
                 .map(clientScopeMapper::toDto)
@@ -51,7 +51,7 @@ public class ClientScopeService implements IClientScopeService {
     }
 
     @Override
-    public List<ScopeDetailResponse> getScopesByClientId(String clientId) {
+    public List<ScopeDetailResponse> getById(String clientId) {
         List<ClientScope> scopes = clientScopeRepository.findByClient_ClientIdAndIsDeletedFalse(clientId);
         if (scopes.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No scopes found for this client");
@@ -64,7 +64,7 @@ public class ClientScopeService implements IClientScopeService {
 
     @Transactional
     @Override
-    public void updateScope(UpdateScopeRequest request) {
+    public void update(UpdateScopeRequest request) {
         ClientScope scope = clientScopeRepository
                 .findByClient_ClientIdAndScopeAndIsDeletedFalse(request.getClientId(), request.getOldScope())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Old scope not found for this client"));
@@ -79,7 +79,7 @@ public class ClientScopeService implements IClientScopeService {
 
     @Transactional
     @Override
-    public void deleteScope(String clientId) {
+    public void delete(String clientId) {
         List<ClientScope> scopes = clientScopeRepository.findByClient_ClientIdAndIsDeletedFalse(clientId);
         if (scopes.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Scopes not found for client");

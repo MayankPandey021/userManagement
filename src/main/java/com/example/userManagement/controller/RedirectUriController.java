@@ -23,13 +23,13 @@ public class RedirectUriController {
     private final RedirectUriMapper redirectUriMapper;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ClientRedirectUrisResponse>> getAllRedirectUris() {
-        return ResponseEntity.ok(redirectUriService.getAllActiveRedirectUrisByClientId());
+    public ResponseEntity<List<ClientRedirectUrisResponse>> get() {
+        return ResponseEntity.ok(redirectUriService.get());
     }
 
     @GetMapping("/client/{clientId}")
-    public ResponseEntity<List<RedirectUriResponse>> getRedirectUris(@PathVariable String clientId) {
-        List<RedirectUri> uris = redirectUriService.getRedirectUrisByClientId(clientId);
+    public ResponseEntity<List<RedirectUriResponse>> getById(@PathVariable String clientId) {
+        List<RedirectUri> uris = redirectUriService.getById(clientId);
         List<RedirectUriResponse> responseList = uris.stream()
                 .map(redirectUriMapper::toDto)
                 .collect(Collectors.toList());
@@ -38,27 +38,27 @@ public class RedirectUriController {
 
     @PostMapping("/add")
     public ResponseEntity<RedirectUriResponse> create(@Valid @RequestBody CreateRedirectUriRequest request) {
-        RedirectUriResponse response = redirectUriService.createRedirectUri(request);
+        RedirectUriResponse response = redirectUriService.create(request);
         return ResponseEntity.ok(response);
     }
 
 
     @PostMapping("/update/{clientId}")
-    public ResponseEntity<Void> updateRedirectUri(@PathVariable String clientId,
-                                                  @Valid @RequestBody UpdateRedirectUriRequest request) {
+    public ResponseEntity<Void> update(@PathVariable String clientId,
+                                       @Valid @RequestBody UpdateRedirectUriRequest request) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
 
-        redirectUriService.updateRedirectUri(clientId, request.getOldUri(), request.getNewUri(), username);
+        redirectUriService.update(clientId, request.getOldUri(), request.getNewUri(), username);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/client/{clientId}/uri")
-    public ResponseEntity<Void> deleteRedirectUriByClientIdAndUri(@PathVariable String clientId,
-                                                                  @Valid @RequestBody DeleteRedirectUriRequest request) {
+    public ResponseEntity<Void> delete(@PathVariable String clientId,
+                                       @Valid @RequestBody DeleteRedirectUriRequest request) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
-        redirectUriService.deleteRedirectUri(clientId, request.getUri(), username);
+        redirectUriService.delete(clientId, request.getUri(), username);
         return ResponseEntity.ok().build();
     }
 

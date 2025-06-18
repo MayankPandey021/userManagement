@@ -25,7 +25,7 @@ public class UserService implements IUserService {
     @Autowired private UserMapper mapper;
 
     @Override
-    public UserResponseDto createUser(UserCreateRequest r) {
+    public UserResponseDto create(UserCreateRequest r) {
         User u = mapper.toEntity(r);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String createdBy = (auth != null) ? auth.getName() : "system";
@@ -44,7 +44,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void updateUser(Long id, UserUpdateRequest request) {
+    public void update(Long id, UserUpdateRequest request) {
         User user = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -58,7 +58,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<UserResponseDto> getUsers() {
+    public List<UserResponseDto> get() {
         return repo.findAllNonDeletedUsers()
                 .stream()
                 .map(mapper::toDto)
@@ -66,15 +66,16 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserResponseDto getUserById(Long id) {
+    public UserResponseDto getById(Long id) {
         User user = repo.findById(id)
                 .filter(u -> !u.isDeleted())
                 .orElseThrow();
         return mapper.toDto(user);
     }
 
+
     @Override
-    public void deleteUser(Long id) {
+    public void delete(Long id) {
         User user = repo.findById(id)
                 .filter(u -> !u.isDeleted())
                 .orElseThrow(() -> new RuntimeException("User not found"));

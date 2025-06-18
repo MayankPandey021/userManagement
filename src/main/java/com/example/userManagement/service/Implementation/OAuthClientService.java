@@ -43,7 +43,7 @@ public class OAuthClientService implements IOAuthClientService {
     private ClientMapper mapper;
 
     @Transactional
-    public void updateClient(String clientId, @Valid UpdateClientRequest request) {
+    public void update(String clientId, @Valid UpdateClientRequest request) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String updatedByUsername = auth.getName();
 
@@ -55,7 +55,7 @@ public class OAuthClientService implements IOAuthClientService {
         clientRepo.save(client);
     }
 
-    public void createClient(@Valid CreateClientRequest request, String createdByUsername) {
+    public void create(@Valid CreateClientRequest request, String createdByUsername) {
         if (clientRepo.existsByClientId(request.getClientId())) {
             throw new IllegalArgumentException("ClientId already exists");
         }
@@ -66,14 +66,14 @@ public class OAuthClientService implements IOAuthClientService {
         logger.info("Client [{}] created by {}", client.getClientId(), createdByUsername);
     }
 
-    public List<OAuthClientList> getClients() {
+    public List<OAuthClientList> get() {
         return clientRepo.findAll().stream()
                 .filter(client -> Boolean.TRUE.equals(client.getActive()) && Boolean.FALSE.equals(client.getDeleted()))
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public void deleteClient(String clientId) {
+    public void delete(String clientId) {
         String updatedByUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         OAuthClient client = clientRepo.findByClientId(clientId)
                 .orElseThrow(() -> new ClientNotFoundException("Client not found"));
@@ -84,7 +84,7 @@ public class OAuthClientService implements IOAuthClientService {
         logger.info("Client [{}] marked as deleted by {}", clientId, updatedByUsername);
     }
 
-    public Optional<OAuthClientList> getClientByClientId(String clientId) {
+    public Optional<OAuthClientList> getById(String clientId) {
         return clientRepo.findByClientId(clientId)
                 .filter(client -> !Boolean.TRUE.equals(client.getDeleted()))
                 .map(mapper::toDto);

@@ -6,10 +6,11 @@ import com.example.userManagement.dto.redirectUri.RedirectUriResponse;
 import com.example.userManagement.entity.OAuthClient;
 import com.example.userManagement.entity.RedirectUri;
 import com.example.userManagement.exception.ClientNotFoundException;
+import com.example.userManagement.service.Interface.IRedirectUriService;
 import com.example.userManagement.service.mapper.RedirectUriMapper;
 import com.example.userManagement.repository.OAuthClientRepository;
 import com.example.userManagement.repository.RedirectUriRepository;
-import com.example.userManagement.service.abstraction.IRedirectUriService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -31,7 +32,7 @@ public class RedirectUriService implements IRedirectUriService {
     private final RedirectUriMapper redirectUriMapper;
     private final Logger logger = LoggerFactory.getLogger(RedirectUriService.class);
 
-    public RedirectUriResponse createRedirectUri(@Valid CreateRedirectUriRequest request) {
+    public RedirectUriResponse create(@Valid CreateRedirectUriRequest request) {
         String createdBy = SecurityContextHolder.getContext().getAuthentication().getName();
 
         OAuthClient client = clientRepo.findByClientId(request.getClientId())
@@ -43,7 +44,7 @@ public class RedirectUriService implements IRedirectUriService {
         return redirectUriMapper.toDto(uri);
     }
 
-    public void deleteRedirectUri(String clientId, String uri, String updatedBy) {
+    public void delete(String clientId, String uri, String updatedBy) {
         OAuthClient client = clientRepo.findByClientId(clientId)
                 .orElseThrow(() -> new ClientNotFoundException("Client not found"));
 
@@ -56,7 +57,7 @@ public class RedirectUriService implements IRedirectUriService {
         redirectUriRepo.save(targetUri);
     }
 
-    public void updateRedirectUri(String clientId, String oldUri, String newUri, String updatedBy) {
+    public void update(String clientId, String oldUri, String newUri, String updatedBy) {
         RedirectUri uri = redirectUriRepo.findByClient_ClientIdAndUriAndIsDeletedFalse(clientId, oldUri)
                 .orElseThrow(() -> new RuntimeException("Redirect URI not found for client"));
 
@@ -64,7 +65,7 @@ public class RedirectUriService implements IRedirectUriService {
         redirectUriRepo.save(uri);
     }
 
-    public List<RedirectUri> getRedirectUrisByClientId(String clientId) {
+    public List<RedirectUri> getById(String clientId) {
         OAuthClient client = clientRepo.findByClientId(clientId)
                 .orElseThrow(() -> new ClientNotFoundException("Client not found"));
 
@@ -73,7 +74,7 @@ public class RedirectUriService implements IRedirectUriService {
                 .toList();
     }
 
-    public List<ClientRedirectUrisResponse> getAllActiveRedirectUrisByClientId() {
+    public List<ClientRedirectUrisResponse> get() {
         List<RedirectUri> allUris = redirectUriRepo.findAllByIsDeletedFalseAndIsActiveTrue();
 
         Map<String, List<String>> grouped = allUris.stream()
@@ -86,6 +87,7 @@ public class RedirectUriService implements IRedirectUriService {
                 .map(entry -> mapToResponse(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
     }
+
 
     // --- Moved helper methods ---
 

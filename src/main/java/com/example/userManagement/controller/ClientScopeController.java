@@ -23,30 +23,30 @@ public class ClientScopeController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<Void> createScope(@Valid @RequestBody CreateScopeRequest request) {
-        clientScopeService.createScope(request);
+    public ResponseEntity<Void> create(@Valid @RequestBody CreateScopeRequest request) {
+        clientScopeService.create(request);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<ScopeResponse>> listScopes() {
-        return ResponseEntity.ok(clientScopeService.getScopes());
+    public ResponseEntity<List<ScopeResponse>> get() {
+        return ResponseEntity.ok(clientScopeService.get());
     }
 
     @GetMapping("/client/{clientId}")
-    public ResponseEntity<List<ScopeDetailResponse>> getScopesByClientId(@PathVariable String clientId) {
-        return ResponseEntity.ok(clientScopeService.getScopesByClientId(clientId));
+    public ResponseEntity<List<ScopeDetailResponse>> getById(@PathVariable String clientId) {
+        return ResponseEntity.ok(clientScopeService.getById(clientId));
     }
 
     @PatchMapping("/update")
-    public ResponseEntity<Void> updateScope(@Valid @RequestBody UpdateScopeRequest request) {
-        clientScopeService.updateScope(request);
+    public ResponseEntity<Void> update(@Valid @RequestBody UpdateScopeRequest request) {
+        clientScopeService.update(request);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/delete/{clientId}")
-    public ResponseEntity<Void> deleteScope(@PathVariable String clientId) {
-        clientScopeService.deleteScope(clientId);
+    public ResponseEntity<Void> delete(@PathVariable String clientId) {
+        clientScopeService.delete(clientId);
         return ResponseEntity.ok().build();
     }
 

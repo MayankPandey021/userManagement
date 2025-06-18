@@ -1,7 +1,6 @@
 package com.example.userManagement.controller;
 
 import com.example.userManagement.dto.client.*;
-import com.example.userManagement.entity.OAuthClient;
 import com.example.userManagement.service.Implementation.OAuthClientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,23 +19,23 @@ public class OAuthClientController {
     private final OAuthClientService clientService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createClient(@RequestBody @Valid CreateClientRequest request) {
+    public ResponseEntity<?> create(@RequestBody @Valid CreateClientRequest request) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName(); // 👈 gets the current logged-in username
 
-        clientService.createClient(request, username);
+        clientService.create(request, username);
         return ResponseEntity.ok("Client created");
     }
 
     @GetMapping
-    public ResponseEntity<List<OAuthClientList>> getClients() {
-        return ResponseEntity.ok(clientService.getClients());
+    public ResponseEntity<List<OAuthClientList>> get() {
+        return ResponseEntity.ok(clientService.get());
     }
 
     @GetMapping("/{clientId}")
-    public ResponseEntity<OAuthClientList> getClientByClientId(@PathVariable String clientId) {
+    public ResponseEntity<OAuthClientList> getById(@PathVariable String clientId) {
         return ResponseEntity.ok(
-                clientService.getClientByClientId(clientId)
+                clientService.getById(clientId)
                         .orElseThrow(() -> new RuntimeException("Client not found"))
         );
     }
@@ -45,15 +44,15 @@ public class OAuthClientController {
 
 
     @PatchMapping("/{clientId}")
-    public ResponseEntity<String> updateClient(@PathVariable String clientId,
-                                               @RequestBody UpdateClientRequest request) {
-        clientService.updateClient(clientId, request);
+    public ResponseEntity<String> update(@PathVariable String clientId,
+                                         @RequestBody UpdateClientRequest request) {
+        clientService.update(clientId, request);
         return ResponseEntity.ok("✅ Client updated successfully.");
     }
 
     @DeleteMapping("/{clientId}")
-    public ResponseEntity<Void> deleteClient(@PathVariable String clientId) {
-        clientService.deleteClient(clientId);
+    public ResponseEntity<Void> delete(@PathVariable String clientId) {
+        clientService.delete(clientId);
         return ResponseEntity.ok().build();
     }
 }

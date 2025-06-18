@@ -4,7 +4,6 @@ import com.example.userManagement.dto.user.LoginRequest;
 import com.example.userManagement.dto.user.UserCreateRequest;
 import com.example.userManagement.dto.user.UserUpdateRequest;
 import com.example.userManagement.dto.user.UserResponseDto;
-import com.example.userManagement.entity.User;
 import com.example.userManagement.service.Implementation.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +22,8 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('SCOPE_write')")
     @PostMapping("/create")
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserCreateRequest r) {
-        return ResponseEntity.ok(service.createUser(r));
+    public ResponseEntity<?> create(@Valid @RequestBody UserCreateRequest r) {
+        return ResponseEntity.ok(service.create(r));
     }
 
     @PostMapping("/login")
@@ -35,30 +34,28 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable Long id,
-                                             @RequestBody UserUpdateRequest request) {
-        service.updateUser(id, request); // ✅ Instance call, not static
+    public ResponseEntity<String> update(@PathVariable Long id,
+                                         @RequestBody UserUpdateRequest request) {
+        service.update(id, request); // ✅ Instance call, not static
         return ResponseEntity.ok("✅ User updated successfully.");
     }
 
-
     @GetMapping
-    public List<UserResponseDto> getUsers() {
-        return service.getUsers();
+    public List<UserResponseDto> get() {
+        return service.get();
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('SCOPE_read')")
-    public UserResponseDto getUserById(@PathVariable Long id) {
-        return service.getUserById(id);
+    public UserResponseDto getById(@PathVariable Long id) {
+        return service.getById(id);
     }
-
 
 
     @PreAuthorize("hasAuthority('SCOPE_write')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        service.deleteUser(id);
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        service.delete(id);
         return ResponseEntity.ok("User deleted successfully");
     }
 }

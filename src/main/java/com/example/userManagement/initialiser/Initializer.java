@@ -11,8 +11,6 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 
 
-
-import java.util.List;
 import java.util.UUID;
 
 
@@ -62,7 +60,7 @@ public class Initializer {
                 req.setMobile("1234567890");
                 req.setUsername("mayank");
                 req.setPassword("mayank");
-                userService.createUser(req);
+                userService.create(req);
             }
         };
     }

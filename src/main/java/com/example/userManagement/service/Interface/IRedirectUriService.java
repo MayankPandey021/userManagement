@@ -1,4 +1,4 @@
-package com.example.userManagement.service.abstraction;
+package com.example.userManagement.service.Interface;
 
 import com.example.userManagement.dto.redirectUri.ClientRedirectUrisResponse;
 import com.example.userManagement.dto.redirectUri.CreateRedirectUriRequest;
@@ -9,12 +9,9 @@ import java.util.List;
 
 public interface IRedirectUriService {
 
-    RedirectUriResponse createRedirectUri(CreateRedirectUriRequest request);
-
-    void deleteRedirectUri(String clientId, String uri, String updatedBy);
-    void updateRedirectUri(String clientId, String oldUri, String newUri, String updatedBy);
-
-    List<RedirectUri> getRedirectUrisByClientId(String clientId);
-
-    List<ClientRedirectUrisResponse> getAllActiveRedirectUrisByClientId();
+    RedirectUriResponse create(CreateRedirectUriRequest request);
+    void delete(String clientId, String uri, String updatedBy);
+    void update(String clientId, String oldUri, String newUri, String updatedBy);
+    List<RedirectUri> getById(String clientId);
+    List<ClientRedirectUrisResponse> get();
 }

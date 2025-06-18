@@ -7,15 +7,11 @@ import com.example.userManagement.dto.scopes.UpdateScopeRequest;
 import java.util.List;
 
 public interface IClientScopeService {
-    void createScope(CreateScopeRequest request);
-
-    List<ScopeResponse> getScopes();
-
-    List<ScopeDetailResponse> getScopesByClientId(String clientId);
-
-    void updateScope(UpdateScopeRequest request);
-
-    void deleteScope(String clientId);
+    void create(CreateScopeRequest request);
+    List<ScopeResponse> get();
+    List<ScopeDetailResponse> getById(String clientId);
+    void update(UpdateScopeRequest request);
+    void delete(String clientId);
 
 
 }
