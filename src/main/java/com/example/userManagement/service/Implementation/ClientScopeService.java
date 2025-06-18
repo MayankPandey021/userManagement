@@ -6,14 +6,15 @@ import com.example.userManagement.dto.scopes.ScopeResponse;
 import com.example.userManagement.dto.scopes.UpdateScopeRequest;
 import com.example.userManagement.entity.ClientScope;
 import com.example.userManagement.entity.OAuthClient;
+import com.example.userManagement.service.mapper.ClientScopeMapper;
 import com.example.userManagement.repository.ClientScopeRepository;
 import com.example.userManagement.repository.OAuthClientRepository;
 import com.example.userManagement.service.Interface.IClientScopeService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,6 +26,7 @@ public class ClientScopeService implements IClientScopeService {
 
     private final ClientScopeRepository clientScopeRepository;
     private final OAuthClientRepository oAuthClientRepository;
+    private final ClientScopeMapper clientScopeMapper;
 
     @Transactional
     @Override
@@ -32,15 +34,11 @@ public class ClientScopeService implements IClientScopeService {
         if (clientScopeRepository.existsByClient_ClientIdAndScopeAndIsDeletedFalse(request.getClientId(), request.getScope())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Scope already exists for this client");
         }
+
         OAuthClient client = oAuthClientRepository.findByClientId(request.getClientId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found"));
 
-        ClientScope scope = new ClientScope();
-        scope.setClient(client);
-        scope.setScope(request.getScope());
-        scope.setIsActive(true);
-        scope.setIsDeleted(false);
-        scope.setCreatedAt(LocalDate.now());
+        ClientScope scope = clientScopeMapper.toEntity(request, client);
         clientScopeRepository.save(scope);
     }
 
@@ -48,12 +46,8 @@ public class ClientScopeService implements IClientScopeService {
     public List<ScopeResponse> getScopes() {
         return clientScopeRepository.findAll().stream()
                 .filter(scope -> !Boolean.TRUE.equals(scope.getIsDeleted()))
-                .map(scope -> {
-                    ScopeResponse resp = new ScopeResponse();
-                    resp.setClientId(scope.getClient().getClientId());
-                    resp.setScope(scope.getScope());
-                    return resp;
-                }).collect(Collectors.toList());
+                .map(clientScopeMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -63,18 +57,9 @@ public class ClientScopeService implements IClientScopeService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No scopes found for this client");
         }
 
-        return scopes.stream().map(scope -> {
-            ScopeDetailResponse resp = new ScopeDetailResponse();
-            resp.setClientId(scope.getClient().getClientId());
-            resp.setScope(scope.getScope());
-            resp.setCreatedBy(scope.getCreatedBy());
-            resp.setUpdatedBy(scope.getUpdatedBy());
-            resp.setIsDeleted(scope.getIsDeleted());
-            resp.setIsActive(scope.getIsActive());
-            resp.setCreatedAt(scope.getCreatedAt());
-            resp.setUpdatedAt(scope.getUpdatedAt());
-            return resp;
-        }).collect(Collectors.toList());
+        return scopes.stream()
+                .map(this::toScopeDetailResponse)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -88,8 +73,7 @@ public class ClientScopeService implements IClientScopeService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "New scope already exists for this client");
         }
 
-        scope.setScope(request.getNewScope());
-        scope.setUpdatedAt(LocalDate.now());
+        updateScopeEntity(scope, request.getNewScope());
         clientScopeRepository.save(scope);
     }
 
@@ -102,16 +86,34 @@ public class ClientScopeService implements IClientScopeService {
         }
 
         for (ClientScope scope : scopes) {
-            scope.setIsDeleted(true);
-            scope.setIsActive(false);
-            scope.setUpdatedAt(LocalDate.now());
+            markAsDeleted(scope);
             clientScopeRepository.save(scope);
         }
     }
 
-    @Transactional
-    @Override
-    public void addScope(CreateScopeRequest request) {
-        createScope(request);
+    // -------------------- Helper Methods --------------------
+
+    private void markAsDeleted(ClientScope scope) {
+        scope.setIsDeleted(true);
+        scope.setIsActive(false);
+        scope.setUpdatedAt(LocalDate.now());
+    }
+
+    private void updateScopeEntity(ClientScope scope, String newScope) {
+        scope.setScope(newScope);
+        scope.setUpdatedAt(LocalDate.now());
+    }
+
+    private ScopeDetailResponse toScopeDetailResponse(ClientScope scope) {
+        ScopeDetailResponse resp = new ScopeDetailResponse();
+        resp.setClientId(scope.getClient().getClientId());
+        resp.setScope(scope.getScope());
+        resp.setCreatedBy(scope.getCreatedBy());
+        resp.setUpdatedBy(scope.getUpdatedBy());
+        resp.setIsDeleted(scope.getIsDeleted());
+        resp.setIsActive(scope.getIsActive());
+        resp.setCreatedAt(scope.getCreatedAt());
+        resp.setUpdatedAt(scope.getUpdatedAt());
+        return resp;
     }
 }

@@ -2,7 +2,7 @@ package com.example.userManagement.controller;
 
 import com.example.userManagement.dto.redirectUri.*;
 import com.example.userManagement.entity.RedirectUri;
-import com.example.userManagement.service.implementation.RedirectUriService;
+import com.example.userManagement.service.Implementation.RedirectUriService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.userManagement.dto.redirectUri.UpdateRedirectUriRequest;
 import java.util.List;
 import java.util.stream.Collectors;
+import com.example.userManagement.service.mapper.RedirectUriMapper;
 
 @RestController
 @RequestMapping("/api/redirect-uris")
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class RedirectUriController {
 
     private final RedirectUriService redirectUriService;
+    private final RedirectUriMapper redirectUriMapper;
 
     @GetMapping("/all")
     public ResponseEntity<List<ClientRedirectUrisResponse>> getAllRedirectUris() {
@@ -28,17 +30,9 @@ public class RedirectUriController {
     @GetMapping("/client/{clientId}")
     public ResponseEntity<List<RedirectUriResponse>> getRedirectUris(@PathVariable String clientId) {
         List<RedirectUri> uris = redirectUriService.getRedirectUrisByClientId(clientId);
-        List<RedirectUriResponse> responseList = uris.stream().map(uri -> {
-            RedirectUriResponse res = new RedirectUriResponse();
-            res.setId(uri.getId());
-            res.setUri(uri.getUri());
-            res.setIsActive(uri.getIsActive());
-            res.setIsDeleted(uri.getIsDeleted());
-            res.setCreatedAt(uri.getCreatedAt());
-            res.setUpdatedAt(uri.getUpdatedAt());
-            return res;
-        }).collect(Collectors.toList());
-
+        List<RedirectUriResponse> responseList = uris.stream()
+                .map(redirectUriMapper::toDto)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(responseList);
     }
 

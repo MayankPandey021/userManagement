@@ -1,2 +1,6 @@
-com/example/userManagement/service/Interface/IOAuthClientService.class
+com/example/userManagement/service/mapper/UserMapper.class
 com/example/userManagement/UserManagementApplication.class
+com/example/userManagement/service/mapper/ClientMapper.class
+com/example/userManagement/service/mapper/ClientScopeMapper.class
+com/example/userManagement/service/mapper/RedirectUriMapper.class
+com/example/userManagement/initialiser/Initializer.class

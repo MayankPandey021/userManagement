@@ -24,7 +24,7 @@ public class OAuthClientController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName(); // 👈 gets the current logged-in username
 
-        clientService.createClient(request, username); // ✅ fixed: two parameters now
+        clientService.createClient(request, username);
         return ResponseEntity.ok("Client created");
     }
 
@@ -34,15 +34,12 @@ public class OAuthClientController {
     }
 
     @GetMapping("/{clientId}")
-    public ResponseEntity<OAuthClient> getClientByClientId(@PathVariable String clientId) {
+    public ResponseEntity<OAuthClientList> getClientByClientId(@PathVariable String clientId) {
         return ResponseEntity.ok(
                 clientService.getClientByClientId(clientId)
                         .orElseThrow(() -> new RuntimeException("Client not found"))
         );
     }
-
-
-
 
 
 

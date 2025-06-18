@@ -1,4 +1,4 @@
-package com.example.userManagement.service.abstraction;
+package com.example.userManagement.service.Interface;
 
 import com.example.userManagement.dto.user.UserCreateRequest;
 import com.example.userManagement.dto.user.UserUpdateRequest;
@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface IUserService {
     UserResponseDto createUser(UserCreateRequest r);
 
-    Optional<User> login(String username, String rawPwd);
+    Optional<UserResponseDto> login(String username, String rawPwd);
     void updateUser(Long id, UserUpdateRequest request);
 
     List<UserResponseDto> getUsers();
@@ -20,8 +20,7 @@ public interface IUserService {
 
     UserResponseDto getUserById(Long id);
 
-    //sud be done by updateUser itself - done
-    void resetPassword(String username, String newPassword);
+
 
     void deleteUser(Long id);
 

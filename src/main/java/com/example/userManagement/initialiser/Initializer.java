@@ -1,13 +1,8 @@
 package com.example.userManagement.initialiser;
 
-import com.example.userManagement.dto.client.CreateClientRequest;
 import com.example.userManagement.dto.user.UserCreateRequest;
 import com.example.userManagement.repository.JpaRegisteredClientRepository;
-import com.example.userManagement.repository.OAuthClientRepository;
-import com.example.userManagement.repository.RedirectUriRepository;
-import com.example.userManagement.repository.ClientScopeRepository;
-import com.example.userManagement.service.implementation.UserService;
-import org.apache.tomcat.util.http.parser.Authorization;
+import com.example.userManagement.service.Implementation.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.boot.CommandLineRunner;
@@ -15,16 +10,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 
-import com.example.userManagement.dto.client.CreateClientRequest;
 
-import com.example.userManagement.service.implementation.UserService;
-import com.example.userManagement.dto.user.UserCreateRequest;
 
 import java.util.List;
 import java.util.UUID;
-import java.time.LocalDate;
 
-import com.example.userManagement.service.Implementation.OAuthClientService;
 
 @Configuration
 public class Initializer {

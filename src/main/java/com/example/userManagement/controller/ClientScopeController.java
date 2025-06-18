@@ -50,9 +50,4 @@ public class ClientScopeController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<Void> addScope(@Valid @RequestBody CreateScopeRequest request) {
-        clientScopeService.addScope(request);
-        return ResponseEntity.ok().build();
-    }
 }

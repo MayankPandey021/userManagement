@@ -1,4 +1,4 @@
-package com.example.userManagement.mapper;
+package com.example.userManagement.service.mapper;
 
 import com.example.userManagement.dto.redirectUri.RedirectUriResponse;
 import com.example.userManagement.entity.RedirectUri;
@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-06-18T11:58:14+0530",
-    comments = "version: 1.5.3.Final, compiler: javac, environment: Java 21.0.7 (Homebrew)"
+    date = "2025-06-18T18:18:16+0530",
+    comments = "version: 1.5.3.Final, compiler: javac, environment: Java 21.0.7 (Microsoft)"
 )
 @Component
 public class RedirectUriMapperImpl implements RedirectUriMapper {
@@ -30,24 +30,5 @@ public class RedirectUriMapperImpl implements RedirectUriMapper {
         redirectUriResponse.setCreatedBy( entity.getCreatedBy() );
 
         return redirectUriResponse;
-    }
-
-    @Override
-    public RedirectUri toEntity(RedirectUriResponse dto) {
-        if ( dto == null ) {
-            return null;
-        }
-
-        RedirectUri redirectUri = new RedirectUri();
-
-        redirectUri.setId( dto.getId() );
-        redirectUri.setUri( dto.getUri() );
-        redirectUri.setCreatedBy( dto.getCreatedBy() );
-        redirectUri.setIsDeleted( dto.getIsDeleted() );
-        redirectUri.setIsActive( dto.getIsActive() );
-        redirectUri.setCreatedAt( dto.getCreatedAt() );
-        redirectUri.setUpdatedAt( dto.getUpdatedAt() );
-
-        return redirectUri;
     }
 }

@@ -17,6 +17,5 @@ public interface IClientScopeService {
 
     void deleteScope(String clientId);
 
-    //sud be handled by updateScope method
-    void addScope(CreateScopeRequest request);
+
 }

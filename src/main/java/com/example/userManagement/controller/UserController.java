@@ -1,12 +1,11 @@
 package com.example.userManagement.controller;
 
 import com.example.userManagement.dto.user.LoginRequest;
-//import com.example.userManagement.dto.user.ResetPasswordRequest;
 import com.example.userManagement.dto.user.UserCreateRequest;
 import com.example.userManagement.dto.user.UserUpdateRequest;
 import com.example.userManagement.dto.user.UserResponseDto;
 import com.example.userManagement.entity.User;
-import com.example.userManagement.service.implementation.UserService;
+import com.example.userManagement.service.Implementation.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

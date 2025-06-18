@@ -26,10 +26,6 @@
 /Users/mayank/MyLearning/IdeaProjects/TR/userManagement/src/main/java/com/example/userManagement/entity/User.java
 /Users/mayank/MyLearning/IdeaProjects/TR/userManagement/src/main/java/com/example/userManagement/exception/ClientNotFoundException.java
 /Users/mayank/MyLearning/IdeaProjects/TR/userManagement/src/main/java/com/example/userManagement/initialiser/Initializer.java
-/Users/mayank/MyLearning/IdeaProjects/TR/userManagement/src/main/java/com/example/userManagement/mapper/ClientScopeMapper.java
-/Users/mayank/MyLearning/IdeaProjects/TR/userManagement/src/main/java/com/example/userManagement/mapper/OAuthClientMapper.java
-/Users/mayank/MyLearning/IdeaProjects/TR/userManagement/src/main/java/com/example/userManagement/mapper/RedirectUriMapper.java
-/Users/mayank/MyLearning/IdeaProjects/TR/userManagement/src/main/java/com/example/userManagement/mapper/UserMapper.java
 /Users/mayank/MyLearning/IdeaProjects/TR/userManagement/src/main/java/com/example/userManagement/repository/ClientScopeRepository.java
 /Users/mayank/MyLearning/IdeaProjects/TR/userManagement/src/main/java/com/example/userManagement/repository/JpaRegisteredClientRepository.java
 /Users/mayank/MyLearning/IdeaProjects/TR/userManagement/src/main/java/com/example/userManagement/repository/OAuthClientRepository.java
@@ -47,3 +43,7 @@
 /Users/mayank/MyLearning/IdeaProjects/TR/userManagement/src/main/java/com/example/userManagement/service/Interface/IOAuthClientService.java
 /Users/mayank/MyLearning/IdeaProjects/TR/userManagement/src/main/java/com/example/userManagement/service/Interface/IRedirectUriService.java
 /Users/mayank/MyLearning/IdeaProjects/TR/userManagement/src/main/java/com/example/userManagement/service/Interface/IUserService.java
+/Users/mayank/MyLearning/IdeaProjects/TR/userManagement/src/main/java/com/example/userManagement/service/mapper/ClientMapper.java
+/Users/mayank/MyLearning/IdeaProjects/TR/userManagement/src/main/java/com/example/userManagement/service/mapper/ClientScopeMapper.java
+/Users/mayank/MyLearning/IdeaProjects/TR/userManagement/src/main/java/com/example/userManagement/service/mapper/RedirectUriMapper.java
+/Users/mayank/MyLearning/IdeaProjects/TR/userManagement/src/main/java/com/example/userManagement/service/mapper/UserMapper.java

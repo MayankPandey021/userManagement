@@ -1,18 +1,15 @@
-package com.example.userManagement.service.implementation;
+package com.example.userManagement.service.Implementation;
 
 import com.example.userManagement.dto.user.UserCreateRequest;
 import com.example.userManagement.dto.user.UserUpdateRequest;
 import com.example.userManagement.dto.user.UserResponseDto;
-
 import com.example.userManagement.entity.User;
-import com.example.userManagement.mapper.UserMapper;
+import com.example.userManagement.service.mapper.UserMapper;
 import com.example.userManagement.repository.UserRepository;
-import com.example.userManagement.service.abstraction.IUserService;
+import com.example.userManagement.service.Interface.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.example.userManagement.dto.user.UserResponseDto;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -22,8 +19,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService implements IUserService {
-    @Autowired
-    private UserRepository repo;
+
+    @Autowired private UserRepository repo;
     @Autowired private PasswordEncoder encoder;
     @Autowired private UserMapper mapper;
 
@@ -38,12 +35,12 @@ public class UserService implements IUserService {
         return mapper.toDto(saved);
     }
 
-
     @Override
-    public Optional<User> login(String username, String rawPwd) {
+    public Optional<UserResponseDto> login(String username, String rawPwd) {
         return repo.findByUsername(username)
                 .filter(u -> !u.isDeleted())
-                .filter(u -> encoder.matches(rawPwd, u.getPassword()));
+                .filter(u -> encoder.matches(rawPwd, u.getPassword()))
+                .map(mapper::toDto);
     }
 
     @Override
@@ -51,22 +48,14 @@ public class UserService implements IUserService {
         User user = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Only update fields from DTO, do not overwrite isActive/isDeleted/updatedBy
-        mapper.updateUserFromDto(request, user);
+        applyUserUpdates(user, request);
 
-        if (request.password != null) {
-            user.setPassword(encoder.encode(request.password));
-        }
-
-        // Set updatedBy to current username
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String updatedBy = (auth != null) ? auth.getName() : "system";
         user.setUpdatedBy(updatedBy);
 
         repo.save(user);
     }
-
-
 
     @Override
     public List<UserResponseDto> getUsers() {
@@ -85,16 +74,6 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void resetPassword(String username, String newPassword) {
-        User u = repo.findByUsername(username)
-                .filter(user -> !user.isDeleted())
-                .orElseThrow();
-
-        u.setPassword(encoder.encode(newPassword));
-        repo.save(u);
-    }
-
-    @Override
     public void deleteUser(Long id) {
         User user = repo.findById(id)
                 .filter(u -> !u.isDeleted())
@@ -105,5 +84,19 @@ public class UserService implements IUserService {
 
     public Optional<User> findByUsername(String username) {
         return repo.findByUsername(username);
+    }
+
+    // ------------------------ Private Helper ------------------------
+
+    private void applyUserUpdates(User user, UserUpdateRequest dto) {
+        if (dto.getEmail() != null) user.setEmail(dto.getEmail());
+        if (dto.getFirstName() != null) user.setFirstName(dto.getFirstName());
+        if (dto.getLastName() != null) user.setLastName(dto.getLastName());
+        if (dto.getUsername() != null) user.setUsername(dto.getUsername());
+        if (dto.getMobile() != null) user.setMobile(dto.getMobile());
+
+        if (dto.getPassword() != null) {
+            user.setPassword(encoder.encode(dto.getPassword()));
+        }
     }
 }

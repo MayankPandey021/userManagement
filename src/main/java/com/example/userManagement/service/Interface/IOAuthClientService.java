@@ -7,8 +7,9 @@ import com.example.userManagement.entity.OAuthClient;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
-import java.util.List;
+
 import java.util.Optional;
+import java.util.List;
 
 public interface IOAuthClientService {
 
@@ -21,5 +22,5 @@ public interface IOAuthClientService {
     void deleteClient(String clientId);
 
 
-    Optional<OAuthClient> getClientByClientId(String clientId);
+    Optional<OAuthClientList> getClientByClientId(String clientId);
 }
