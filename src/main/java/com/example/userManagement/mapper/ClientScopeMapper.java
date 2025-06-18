@@ -21,11 +21,7 @@ public interface ClientScopeMapper {
         return s;
     }
 
-    default List<String> toStringList(List<ClientScope> scopes) {
-        return scopes.stream().map(this::toStringScope).collect(Collectors.toList());
-    }
 
-    default List<ClientScope> toEntityList(List<String> scopeStrings) {
-        return scopeStrings.stream().map(this::toEntity).collect(Collectors.toList());
-    }
+
+
 }

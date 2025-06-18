@@ -97,23 +97,30 @@ public class SecurityConfig {
         return new NimbusJwtEncoder(new ImmutableJWKSet<>(jwkSet));
     }
 
-    private RSAPublicKey getPublicKey() throws Exception {
-        String key = new String(new ClassPathResource("public.pem").getInputStream().readAllBytes())
-                .replace("-----BEGIN PUBLIC KEY-----", "")
-                .replace("-----END PUBLIC KEY-----", "")
-                .replaceAll("\\s", "");
-        byte[] decoded = Base64.getDecoder().decode(key);
-        X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
-        return (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(spec);
-    }
 
-    private RSAPrivateKey getPrivateKey() throws Exception {
-        String key = new String(new ClassPathResource("private.pem").getInputStream().readAllBytes())
-                .replace("-----BEGIN PRIVATE KEY-----", "")
-                .replace("-----END PRIVATE KEY-----", "")
-                .replaceAll("\\s", "");
-        byte[] decoded = Base64.getDecoder().decode(key);
-        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decoded);
-        return (RSAPrivateKey) KeyFactory.getInstance("RSA").generatePrivate(spec);
+private RSAPublicKey getPublicKey() throws Exception {
+    String key = System.getenv("RSA_PUBLIC_KEY");
+    if (key == null) {
+        throw new IllegalStateException("RSA_PUBLIC_KEY environment variable not set");
     }
+      key =   key.replace("-----BEGIN PUBLIC KEY-----", "")
+        .replace("-----END PUBLIC KEY-----", "")
+        .replaceAll("\\s", "");
+    byte[] decoded = Base64.getDecoder().decode(key);
+    X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
+    return (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(spec);
+}
+
+private RSAPrivateKey getPrivateKey() throws Exception {
+    String key = System.getenv("RSA_PRIVATE_KEY");
+    if (key == null) {
+        throw new IllegalStateException("RSA_PRIVATE_KEY environment variable not set");
+    }
+       key = key.replace("-----BEGIN PRIVATE KEY-----", "")
+        .replace("-----END PRIVATE KEY-----", "")
+        .replaceAll("\\s", "");
+    byte[] decoded = Base64.getDecoder().decode(key);
+    PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decoded);
+    return (RSAPrivateKey) KeyFactory.getInstance("RSA").generatePrivate(spec);
+}
 }

@@ -1,5 +1,4 @@
-package com.example.userManagement.service.abstraction;
-
+package com.example.userManagement.service.Interface;
 import com.example.userManagement.dto.client.CreateClientRequest;
 import com.example.userManagement.dto.client.OAuthClientList;
 import com.example.userManagement.dto.client.UpdateClientRequest;

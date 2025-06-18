@@ -1,6 +1,5 @@
 package com.example.userManagement.security.crypto;
 
-import com.example.userManagement.config.EncryptionProperties;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,14 +8,16 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
-
 @Converter
 public class EncryptionConverter implements AttributeConverter<String, String> {
 
-
+    private static final String SECRET_KEY = System.getenv("ENCRYPTION_SECRET");
 
     private SecretKeySpec getKey() {
-        return new SecretKeySpec(EncryptionProperties.getSecretKey().getBytes(), "AES");
+        if (SECRET_KEY == null) {
+            throw new IllegalStateException("ENCRYPTION_SECRET_KEY environment variable is not set");
+        }
+        return new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
     }
 
     @Override
@@ -45,5 +46,3 @@ public class EncryptionConverter implements AttributeConverter<String, String> {
         }
     }
 }
-
-

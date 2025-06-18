@@ -54,12 +54,7 @@ public class UserController {
         return service.getUserById(id);
     }
 
-//    @PreAuthorize("hasAuthority('SCOPE_write')")
-//    @PostMapping("/reset-password")
-//    public ResponseEntity<?> reset(@RequestBody ResetPasswordRequest r) {
-//        service.resetPassword(r.username, r.newPassword);
-//        return ResponseEntity.ok("Password reset");
-//    }
+
 
     @PreAuthorize("hasAuthority('SCOPE_write')")
     @DeleteMapping("/{id}")

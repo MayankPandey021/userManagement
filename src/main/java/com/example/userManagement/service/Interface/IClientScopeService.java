@@ -1,4 +1,4 @@
-package com.example.userManagement.service.abstraction;
+package com.example.userManagement.service.Interface;
 import com.example.userManagement.dto.scopes.CreateScopeRequest;
 import com.example.userManagement.dto.scopes.ScopeDetailResponse;
 import com.example.userManagement.dto.scopes.ScopeResponse;

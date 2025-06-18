@@ -1,8 +1,7 @@
 package com.example.userManagement.mapper;
 
-import com.example.userManagement.dto.client.CreateClientRequest;
 import com.example.userManagement.dto.client.OAuthClientList;
-import com.example.userManagement.dto.client.UpdateClientRequest;
+import com.example.userManagement.dto.client.RedirectUriDto;
 import com.example.userManagement.entity.ClientScope;
 import com.example.userManagement.entity.OAuthClient;
 import com.example.userManagement.entity.RedirectUri;
@@ -24,51 +23,14 @@ public class OAuthClientMapper {
         this.passwordEncoder = passwordEncoder;
     }
 
-//    public OAuthClient mapCreateRequestToEntity(CreateClientRequest request, String createdBy) {
-//        OAuthClient client = new OAuthClient();
-//        client.setClientId(request.getClientId());
-//        client.setClientSecret(passwordEncoder.encode(request.getClientSecret()));
-//        client.setAuthorizationGrantTypes(String.valueOf(request.getAuthorizationGrantTypes()));
-//        client.setCreatedAt(LocalDate.now());
-//        client.setCreatedBy(createdBy);
-//        client.setActive(true);
-//        client.setDeleted(false);
-//
-//        client.setRedirectUris(mapRedirectUris(request.getRedirectUris(), client, createdBy));
-//        client.setScopes(mapScopes(request.getScopes(), client, createdBy));
-//
-//        return client;
-//    }
 
-//    public void mapUpdateRequestToEntity(OAuthClient client, UpdateClientRequest request, String updatedBy) {
-//        if (request.getClientSecret() != null) {
-//            client.setClientSecret(passwordEncoder.encode(request.getClientSecret()));
-//        }
-//
-//        if (request.getAuthorizationGrantTypes() != null) {
-//            client.setAuthorizationGrantTypes(String.valueOf(request.getAuthorizationGrantTypes()));
-//        }
-//
-//        if (request.getRedirectUris() != null) {
-//            client.getRedirectUris().clear();
-//            client.getRedirectUris().addAll(mapRedirectUris(request.getRedirectUris(), client, updatedBy));
-//        }
-//
-//        if (request.getScopes() != null) {
-//            client.getScopes().clear();
-//            client.getScopes().addAll(mapScopes(request.getScopes(), client, updatedBy));
-//        }
-//
-//        client.setUpdatedAt(LocalDate.now());
-//        client.setUpdatedBy(updatedBy);
-//    }
 
-    public Set<RedirectUri> mapRedirectUris(List<String> uris, OAuthClient client, String createdBy) {
+    public Set<RedirectUri> mapRedirectUris(List<RedirectUriDto> uris, OAuthClient client, String createdBy) {
         if (uris == null) return Set.of();
         return uris.stream().map(uriStr -> {
             RedirectUri uri = new RedirectUri();
             uri.setId(UUID.randomUUID().toString());
-            uri.setUri(uriStr);
+            uri.setUri(uriStr.getUri());
             uri.setClient(client);
             uri.setCreatedAt(LocalDate.now());
             uri.setCreatedBy(createdBy);
@@ -97,7 +59,7 @@ public class OAuthClientMapper {
     }
 
 
-    public OAuthClientList mapToDto(OAuthClient client) {
+    public OAuthClientList toDto(OAuthClient client) {
         OAuthClientList dto = new OAuthClientList();
 
         dto.setClientId(client.getClientId());
@@ -119,5 +81,32 @@ public class OAuthClientMapper {
         );
 
         return dto;
+    }
+
+    public OAuthClient toEntity(OAuthClientList dto, String createdBy) {
+        OAuthClient client = new OAuthClient();
+        client.setClientId(dto.getClientId());
+        client.setClientSecret(passwordEncoder.encode(dto.getClientSecret()));
+        client.setAuthorizationGrantTypes(
+                String.join(",", dto.getAuthorizationGrantTypes())
+        );
+        client.setRedirectUris(
+                mapRedirectUris(
+                        dto.getRedirectUris().stream()
+                                .map(uri -> {
+                                    RedirectUriDto uriDto = new RedirectUriDto();
+                                    uriDto.setUri(uri);
+                                    return uriDto;
+                                })
+                                .collect(Collectors.toList()),
+                        client,
+                        createdBy
+                )
+        );
+        client.setScopes(
+                mapScopes(dto.getScopes(), client, createdBy)
+        );
+
+        return client;
     }
 }

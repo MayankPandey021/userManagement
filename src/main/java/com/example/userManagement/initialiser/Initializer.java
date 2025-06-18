@@ -29,7 +29,6 @@ import com.example.userManagement.service.Implementation.OAuthClientService;
 @Configuration
 public class Initializer {
 
-// http://localhost:8080/oauth2/authorize?response_type=code&client_id=imposter2&redirect_uri=http://localhost:8080/login/oauth2/code/imposter2&scope=read%20write
 
 //
 //    The commented-out code registers a client using JpaRegisteredClientRepository
@@ -59,24 +58,6 @@ public class Initializer {
             }
         };
     }
-
-
-//    @Bean
-//    public CommandLineRunner addDefaultClientWithService(OAuthClientService clientService, PasswordEncoder encoder) {
-//        return args -> {
-//            if (clientService.getClientByClientId("jake").isEmpty()) {
-//                CreateClientRequest req = new CreateClientRequest();
-//                req.setClientId("jake");
-//                req.setClientSecret(encoder.encode("jake"));
-//                req.setRedirectUris(List.of("http://localhost:8080/login/oauth2/code/jake"));
-//                req.setScopes(List.of("read", "write"));
-//                req.setAuthorizationGrantTypes(List.of("authorization_code", "refresh_token"));
-//
-//
-//                clientService.createClient(req, "system"); // "system" or appropriate username
-//            }
-//        };
-//    }
 
 
     @Bean

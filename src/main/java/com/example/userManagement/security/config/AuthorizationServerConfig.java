@@ -25,8 +25,8 @@ public class AuthorizationServerConfig {
 
     @Autowired
     public AuthorizationServerConfig(
-            @Value("${USER_USERNAME}") String userUsername,
-            @Value("${USER_PASSWORD}") String userPassword
+            @Value("${DATABASE_USERNAME}") String userUsername,
+            @Value("${DATABASE_PASSWORD}") String userPassword
     ) {
         this.userUsername = userUsername;
         this.userPassword = userPassword;

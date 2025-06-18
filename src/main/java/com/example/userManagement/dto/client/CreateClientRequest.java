@@ -12,7 +12,7 @@ public class CreateClientRequest {
     @NotBlank
     private String clientSecret;
 
-    private List<String> redirectUris;
+    private List<RedirectUriDto> redirectUris;
 
     private List<String> scopes;
 

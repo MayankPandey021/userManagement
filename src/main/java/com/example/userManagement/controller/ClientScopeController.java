@@ -5,7 +5,7 @@ import com.example.userManagement.dto.scopes.CreateScopeRequest;
 import com.example.userManagement.dto.scopes.ScopeDetailResponse;
 import com.example.userManagement.dto.scopes.ScopeResponse;
 import com.example.userManagement.dto.scopes.UpdateScopeRequest;
-import com.example.userManagement.service.implementation.ClientScopeService;
+import com.example.userManagement.service.Implementation.ClientScopeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ public class ClientScopeController {
     private final ClientScopeService clientScopeService;
 
 
-    // Is it required?
+
     @PostMapping("/create")
     public ResponseEntity<Void> createScope(@Valid @RequestBody CreateScopeRequest request) {
         clientScopeService.createScope(request);

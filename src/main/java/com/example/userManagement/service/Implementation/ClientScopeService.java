@@ -1,4 +1,4 @@
-package com.example.userManagement.service.implementation;
+package com.example.userManagement.service.Implementation;
 
 import com.example.userManagement.dto.scopes.CreateScopeRequest;
 import com.example.userManagement.dto.scopes.ScopeDetailResponse;
@@ -8,7 +8,7 @@ import com.example.userManagement.entity.ClientScope;
 import com.example.userManagement.entity.OAuthClient;
 import com.example.userManagement.repository.ClientScopeRepository;
 import com.example.userManagement.repository.OAuthClientRepository;
-import com.example.userManagement.service.abstraction.IClientScopeService;
+import com.example.userManagement.service.Interface.IClientScopeService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
